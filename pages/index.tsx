@@ -1,165 +1,231 @@
 import Head from 'next/head';
 import {
-  Button,
-  Group,
-  Container,
-  Title,
-  Text,
-  Slider,
-  InputWrapper,
-  NumberInput,
-  SegmentedControl,
+    Container,
+    Title,
+    Card,
+    Image,
+    SimpleGrid,
+    Text,
+    Button,
+    AppShell,
+    Header,
+    Group,
+    ThemeIcon,
+    Space, UnstyledButton, Avatar, createStyles, Menu,
 } from '@mantine/core';
-import { useNotifications } from '@mantine/notifications';
-import { Prism } from '@mantine/prism';
-import { DatePicker } from '@mantine/dates';
+import { useMutation, useQuery } from 'react-query';
+import { useContext, useEffect, useState } from 'react';
+import { IoHeart, IoHeartOutline, IoAdd, IoHardwareChip, IoChevronDown, IoLogOut } from 'react-icons/io5';
+import Link from 'next/link';
+import jwt_decode from 'jwt-decode';
+import { GetProjects, SetLikeProject } from '../apis/projects';
+import { globalContext } from '../store';
+import { LogoutUser } from '../apis/user';
 
-const code = `
-import React from 'react';
-import { Prism } from '@mantine/prism';
+const useStyles = createStyles((theme) => ({
+    user: {
+        borderRadius: theme.radius.sm,
+        color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
-function Demo() {
-  return <Prism language="tsx">{yourCode}</Prism>
+        '&:hover': {
+            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+        },
+    },
+}));
+
+function getCookie(name: string): any {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts === undefined) return '';
+    const cookie_value = parts.pop()
+        ?.split(';')
+        .shift();
+    if (cookie_value === undefined) return '';
+    return cookie_value;
 }
-`.trim();
-
-const stylesApiCode = `
-<Button
-  component="a"
-  target="_blank"
-  rel="noopener noreferrer"
-  href="https://twitter.com/mantinedev"
-  fullWidth
-  styles={{
-    root: {
-      backgroundColor: "#00acee",
-      textShadow: "unset",
-      border: 0,
-      height: 48,
-      paddingLeft: 20,
-      paddingRight: 20,
-    },
-
-    label: {
-      textShadow: "1px 1px 0 #0490c7",
-    },
-  }}
->
-  Follow Mantine on Twitter
-</Button>
-`.trim();
 
 export default function Home() {
-  const notifications = useNotifications();
-  return (
-    <>
-      <Head>
-        <title>Mantine Next template</title>
-        <meta name="description" content="Mantine Next template" />
-        <link
-          rel="icon"
-          href="https://mantine.dev/favicon.svg?v=c7bf473b30e5d81722ea0acf3a11a107"
-          type="image/svg+xml"
-        />
-      </Head>
+    const { classes } = useStyles();
+    const [projects, setProjects] = useState<any[]>([]);
+    const {
+        globalState,
+        dispatch,
+    } = useContext(globalContext);
 
-      <Container size={400} style={{ paddingTop: 80, paddingBottom: 120 }}>
-        <Title style={{ textAlign: 'center', marginBottom: 20 }}>Mantine Next starter</Title>
-        <Text align="center" style={{ marginBottom: 40 }}>
-          This starter includes all @mantine packages, feel free to remove everything that is not
-          required for your application
-        </Text>
-        <Group position="center">
-          <Button component="a" href="https://mantine.dev" size="lg">
-            Mantine docs
-          </Button>
-          <Button
-            component="a"
-            href="https://mantine.dev/theming/theming-context/"
-            variant="light"
-            size="lg"
-          >
-            Change theme
-          </Button>
-        </Group>
+    const { data } = useQuery('projects', GetProjects);
+    const logout = useMutation(() => LogoutUser(), {
+        onSuccess: () => {
+            setTimeout(() => window.location.reload(), 500);
+        },
+    });
 
-        <Title order={2} style={{ marginBottom: 30, marginTop: 50, textAlign: 'center' }}>
-          Explore features
-        </Title>
+    const setLike = useMutation((like: any) =>
+        SetLikeProject(like.project_id, like.user_id, like.like));
 
-        <Text weight={700}>Notifications system</Text>
+    useEffect(() => {
+        if (data !== undefined) {
+            setProjects(data.projects);
+        }
+    }, [data]);
 
-        <Button
-          variant="outline"
-          style={{ marginTop: 10, marginBottom: 30 }}
-          fullWidth
-          onClick={() =>
-            notifications.showNotification({
-              title: 'Congratulations!',
-              message: "You've just clicked a button",
-            })
-          }
-        >
-          Show notification
-        </Button>
+    useEffect(() => {
+        const token = getCookie('mh_authorization');
+        if (token === '') return;
+        const cookie_data = jwt_decode(token);
+        dispatch({
+            type: 'SET_USER',
+            payload: cookie_data,
+        });
+    }, []);
 
-        <Text weight={700}>Display code with theme colors</Text>
-        <Prism language="tsx" style={{ marginTop: 10, marginBottom: 30 }}>
-          {code}
-        </Prism>
+    const projectCards: any = projects.map((project: any, index: number) =>
+        <Card withBorder shadow="sm" padding="lg" radius="md" key={project.id}>
+            <Card.Section>
+                <Image src="https://picsum.photos/536/354" height={160} alt="Norway" />
+            </Card.Section>
+            <Text
+              sx={(theme) => ({
+                    marginTop: theme.spacing.sm,
+                    marginBottom: theme.spacing.sm,
+                })}
+              weight={500}
+            >{project.name}
+            </Text>
+            <SimpleGrid cols={2}>
+                <Button
+                  onClick={() => {
+                        setLike.mutate({
+                            project_id: project.id,
+                            user_id: 1,
+                            like: !project.isLiked,
+                        });
+                        projects[index].isLiked = !project.isLiked;
+                        projects[index].likeCount += project.isLiked ? 1 : -1;
+                    }}
+                  leftIcon={project.isLiked ? <IoHeart size="24px" /> : <IoHeartOutline size="24px" />}
+                  variant="light"
+                  color="red"
+                >
+                    <Text sx={(theme) => ({ color: theme.colors.red[9] })}>
+                        {project.likeCount}
+                    </Text>
+                </Button>
+                <Button variant="light" color="blue">
+                    <IoAdd size="24px" />
+                </Button>
+            </SimpleGrid>
+        </Card>
+    );
 
-        <Text weight={700}>Build forms fast with huge inputs library</Text>
+    return (
+        <>
+            <Head>
+                <title>MakerHub - Home</title>
+                <meta name="description" content="MakerHub - Home" />
+                <link
+                  rel="icon"
+                  href="https://mantine.dev/favicon.svg?v=c7bf473b30e5d81722ea0acf3a11a107"
+                  type="image/svg+xml"
+                />
+            </Head>
 
-        <InputWrapper label="Slider" style={{ marginTop: 15 }}>
-          <Slider defaultValue={40} />
-        </InputWrapper>
+            <AppShell
+              header={<Header
+                height={60}
+                padding="xs"
+                sx={() => ({
+                        display: 'flex',
+                        alginItems: 'center',
+                    })}
+              >
+                    <Group sx={theme => ({
+                        marginLeft: theme.spacing.md,
+                        marginRight: theme.spacing.md,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                    })}
+                    >
+                        <Group spacing={0}>
+                            <ThemeIcon variant="filled">
+                                <IoHardwareChip />
+                            </ThemeIcon>
+                            <Space w="sm" />
+                            <Text size="xl" weight="bold">MakerHub</Text>
+                        </Group>
+                        <Group spacing={0}>
+                            {globalState.loggedUser !== null ? (
+                                <Menu control={
+                                    <UnstyledButton sx={theme => ({
+                                        root: {
+                                            '&:hover': {
+                                                backgroundColor: theme.colors.gray[1],
+                                            },
+                                        },
+                                    })}
+                                    >
+                                        <Group className={classes.user}>
+                                            <Avatar src="https://i.pravatar.cc/64" />
+                                            <Text>{globalState.loggedUser.username}</Text>
+                                            <IoChevronDown />
+                                        </Group>
+                                    </UnstyledButton>
+                                }
+                                >
+                                    <Menu.Item onClick={() => logout.mutate()} icon={<IoLogOut />}>
+                                        Logout
+                                    </Menu.Item>
+                                </Menu>
+                            ) : (
+                                <Link href={`/login?ref=${typeof window !== 'undefined' ? window.location : ''}`}>
+                                    <Button variant="light" component="a">
+                                        Sign in
+                                    </Button>
+                                </Link>
+                            )}
+                        </Group>
+                    </Group>
+                      </Header>}
+              styles={(theme) => ({
+                    main: {
+                        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+                        height: '100%',
+                    },
+                })}
+            >
+                <Container
+                  size="xl"
+                  style={{
+                        paddingTop: 20,
+                        paddingBottom: 120,
+                    }}
+                >
+                    <Title style={{ marginBottom: 20 }}>Projects</Title>
+                    <SimpleGrid
+                      cols={4}
+                      breakpoints={[
+                            {
+                                maxWidth: 'md',
+                                cols: 3,
+                                spacing: 'md',
+                            },
+                            {
+                                maxWidth: 'sm',
+                                cols: 2,
+                                spacing: 'sm',
+                            },
+                            {
+                                maxWidth: 'xs',
+                                cols: 1,
+                                spacing: 'sm',
+                            },
+                        ]}
+                    >
+                        {projectCards}
+                    </SimpleGrid>
+                </Container>
+            </AppShell>
 
-        <DatePicker label="Date picker" placeholder="Date Picker" style={{ marginTop: 15 }} />
-        <NumberInput defaultValue={18} label="Number input" style={{ marginTop: 15 }} />
-
-        <SegmentedControl
-          fullWidth
-          name="segmented-control"
-          style={{ marginTop: 15 }}
-          data={[
-            { label: 'Segmented', value: 'segmented' },
-            { label: 'Radio', value: 'radio' },
-            { label: 'Control', value: 'control' },
-          ]}
-        />
-
-        <Text weight={700} style={{ marginTop: 30, marginBottom: 15 }}>
-          Add your styles to any part of component
-        </Text>
-        <Button
-          component="a"
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://twitter.com/mantinedev"
-          size="lg"
-          fullWidth
-          styles={{
-            root: {
-              backgroundColor: '#00acee',
-              textShadow: 'unset',
-              border: 0,
-              height: 48,
-              paddingLeft: 20,
-              paddingRight: 20,
-            },
-
-            label: {
-              textShadow: '1px 1px 0 #0490c7',
-            },
-          }}
-        >
-          Follow Mantine on Twitter
-        </Button>
-
-        <Prism language="tsx" style={{ marginTop: 15 }}>
-          {stylesApiCode}
-        </Prism>
-      </Container>
-    </>
-  );
+        </>
+    );
 }
