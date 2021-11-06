@@ -11,7 +11,7 @@ async function CreateProject() {
 async function GetProjects() {
     const f = await fetch(`${base}/projects`, {
         method: 'GET',
-        headers: { authorization: 'Bearer hi' },
+        credentials: 'include',
     });
     return f.json();
 }

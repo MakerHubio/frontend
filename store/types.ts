@@ -1,7 +1,8 @@
 import { Dispatch } from 'react';
+import JWTUser from '../models/JWTUser';
 
 export interface GlobalStateInterface {
-    loggedUser: any | null;
+    loggedUser: JWTUser | null;
 }
 
 export type ActionType = {

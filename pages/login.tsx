@@ -16,7 +16,7 @@ import { useForm } from '@mantine/hooks';
 import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { LoginUser } from '../apis/user';
+import { LoginUser } from '../apis/authentication';
 
 export default function Login() {
     const router = useRouter();

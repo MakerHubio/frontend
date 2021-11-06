@@ -2,8 +2,6 @@ import Head from 'next/head';
 import {
     Container,
     Title,
-    Card,
-    Image,
     SimpleGrid,
     Text,
     Button,
@@ -15,12 +13,13 @@ import {
 } from '@mantine/core';
 import { useMutation, useQuery } from 'react-query';
 import { useContext, useEffect, useState } from 'react';
-import { IoHeart, IoHeartOutline, IoAdd, IoHardwareChip, IoChevronDown, IoLogOut } from 'react-icons/io5';
+import { IoHardwareChip, IoChevronDown, IoLogOut } from 'react-icons/io5';
 import Link from 'next/link';
 import jwt_decode from 'jwt-decode';
 import { GetProjects, SetLikeProject } from '../apis/projects';
 import { globalContext } from '../store';
-import { LogoutUser } from '../apis/user';
+import { LogoutUser } from '../apis/authentication';
+import ProjectCard from '../components/ProjectCard/ProjectCard';
 
 const useStyles = createStyles((theme) => ({
     user: {
@@ -55,6 +54,7 @@ export default function Home() {
     const { data } = useQuery('projects', GetProjects);
     const logout = useMutation(() => LogoutUser(), {
         onSuccess: () => {
+            document.cookie = '';
             setTimeout(() => window.location.reload(), 500);
         },
     });
@@ -79,42 +79,19 @@ export default function Home() {
     }, []);
 
     const projectCards: any = projects.map((project: any, index: number) =>
-        <Card withBorder shadow="sm" padding="lg" radius="md" key={project.id}>
-            <Card.Section>
-                <Image src="https://picsum.photos/536/354" height={160} alt="Norway" />
-            </Card.Section>
-            <Text
-              sx={(theme) => ({
-                    marginTop: theme.spacing.sm,
-                    marginBottom: theme.spacing.sm,
-                })}
-              weight={500}
-            >{project.name}
-            </Text>
-            <SimpleGrid cols={2}>
-                <Button
-                  onClick={() => {
-                        setLike.mutate({
-                            project_id: project.id,
-                            user_id: 1,
-                            like: !project.isLiked,
-                        });
-                        projects[index].isLiked = !project.isLiked;
-                        projects[index].likeCount += project.isLiked ? 1 : -1;
-                    }}
-                  leftIcon={project.isLiked ? <IoHeart size="24px" /> : <IoHeartOutline size="24px" />}
-                  variant="light"
-                  color="red"
-                >
-                    <Text sx={(theme) => ({ color: theme.colors.red[9] })}>
-                        {project.likeCount}
-                    </Text>
-                </Button>
-                <Button variant="light" color="blue">
-                    <IoAdd size="24px" />
-                </Button>
-            </SimpleGrid>
-        </Card>
+        <ProjectCard
+          project={project}
+          likeDisabled={globalState.loggedUser === null}
+          onLike={like => {
+            setLike.mutate({
+                project_id: project.id,
+                user_id: globalState.loggedUser?.userId,
+                like,
+            });
+            projects[index].isLiked = like;
+            projects[index].likeCount += like ? 1 : -1;
+        }}
+        />
     );
 
     return (
@@ -179,7 +156,7 @@ export default function Home() {
                             ) : (
                                 <Link href={`/login?ref=${typeof window !== 'undefined' ? window.location : ''}`}>
                                     <Button variant="light" component="a">
-                                        Sign in
+                                        Login
                                     </Button>
                                 </Link>
                             )}
