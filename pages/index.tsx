@@ -13,54 +13,28 @@ import {
 } from '@mantine/core';
 import { useMutation, useQuery } from 'react-query';
 import { useContext, useEffect, useState } from 'react';
-import { IoHardwareChip, IoChevronDown, IoLogOut } from 'react-icons/io5';
+import { IoHardwareChip, IoChevronDown, IoLogOut, IoPerson } from 'react-icons/io5';
 import Link from 'next/link';
 import jwt_decode from 'jwt-decode';
-import { GetProjects, SetLikeProject } from '../apis/projects';
+import { useRouter } from 'next/router';
+import { CreateProject, GetProjects, SetLikeProject } from '../apis/projects';
 import { globalContext } from '../store';
 import { LogoutUser } from '../apis/authentication';
 import ProjectCard from '../components/ProjectCard/ProjectCard';
-
-const useStyles = createStyles((theme) => ({
-    user: {
-        borderRadius: theme.radius.sm,
-        color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
-
-        '&:hover': {
-            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-        },
-    },
-}));
-
-function getCookie(name: string): any {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts === undefined) return '';
-    const cookie_value = parts.pop()
-        ?.split(';')
-        .shift();
-    if (cookie_value === undefined) return '';
-    return cookie_value;
-}
+import Shell from '../components/Shell/Shell';
 
 export default function Home() {
-    const { classes } = useStyles();
+    const { globalState, dispatch } = useContext(globalContext);
+
     const [projects, setProjects] = useState<any[]>([]);
-    const {
-        globalState,
-        dispatch,
-    } = useContext(globalContext);
 
     const { data } = useQuery('projects', GetProjects);
-    const logout = useMutation(() => LogoutUser(), {
-        onSuccess: () => {
-            document.cookie = '';
-            setTimeout(() => window.location.reload(), 500);
-        },
-    });
 
     const setLike = useMutation((like: any) =>
         SetLikeProject(like.project_id, like.user_id, like.like));
+
+    const createProject = useMutation((name: string) =>
+        CreateProject(name));
 
     useEffect(() => {
         if (data !== undefined) {
@@ -68,19 +42,10 @@ export default function Home() {
         }
     }, [data]);
 
-    useEffect(() => {
-        const token = getCookie('mh_authorization');
-        if (token === '') return;
-        const cookie_data = jwt_decode(token);
-        dispatch({
-            type: 'SET_USER',
-            payload: cookie_data,
-        });
-    }, []);
-
-    const projectCards: any = projects.map((project: any, index: number) =>
+    const projectCards: any = projects?.map((project: any, index: number) =>
         <ProjectCard
           project={project}
+          key={index}
           likeDisabled={globalState.loggedUser === null}
           onLike={like => {
             setLike.mutate({
@@ -95,7 +60,7 @@ export default function Home() {
     );
 
     return (
-        <>
+        <Shell>
             <Head>
                 <title>MakerHub - Home</title>
                 <meta name="description" content="MakerHub - Home" />
@@ -105,71 +70,6 @@ export default function Home() {
                   type="image/svg+xml"
                 />
             </Head>
-
-            <AppShell
-              header={<Header
-                height={60}
-                padding="xs"
-                sx={() => ({
-                        display: 'flex',
-                        alginItems: 'center',
-                    })}
-              >
-                    <Group sx={theme => ({
-                        marginLeft: theme.spacing.md,
-                        marginRight: theme.spacing.md,
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                    })}
-                    >
-                        <Group spacing={0}>
-                            <ThemeIcon variant="filled">
-                                <IoHardwareChip />
-                            </ThemeIcon>
-                            <Space w="sm" />
-                            <Text size="xl" weight="bold">MakerHub</Text>
-                        </Group>
-                        <Group spacing={0}>
-                            {globalState.loggedUser !== null ? (
-                                <Menu control={
-                                    <UnstyledButton sx={theme => ({
-                                        root: {
-                                            '&:hover': {
-                                                backgroundColor: theme.colors.gray[1],
-                                            },
-                                        },
-                                    })}
-                                    >
-                                        <Group className={classes.user}>
-                                            <Avatar src="https://i.pravatar.cc/64" />
-                                            <Text>{globalState.loggedUser.username}</Text>
-                                            <IoChevronDown />
-                                        </Group>
-                                    </UnstyledButton>
-                                }
-                                >
-                                    <Menu.Item onClick={() => logout.mutate()} icon={<IoLogOut />}>
-                                        Logout
-                                    </Menu.Item>
-                                </Menu>
-                            ) : (
-                                <Link href={`/login?ref=${typeof window !== 'undefined' ? window.location : ''}`}>
-                                    <Button variant="light" component="a">
-                                        Login
-                                    </Button>
-                                </Link>
-                            )}
-                        </Group>
-                    </Group>
-                      </Header>}
-              styles={(theme) => ({
-                    main: {
-                        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
-                        height: '100%',
-                    },
-                })}
-            >
                 <Container
                   size="xl"
                   style={{
@@ -178,6 +78,7 @@ export default function Home() {
                     }}
                 >
                     <Title style={{ marginBottom: 20 }}>Projects</Title>
+                    {/* <Button onClick={() => createProject.mutate('#3DBenchy - The jolly 3D printing torture-test by CreativeTools.se')}>Create Project</Button> */}
                     <SimpleGrid
                       cols={4}
                       breakpoints={[
@@ -201,8 +102,6 @@ export default function Home() {
                         {projectCards}
                     </SimpleGrid>
                 </Container>
-            </AppShell>
-
-        </>
+        </Shell>
     );
 }

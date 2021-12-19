@@ -1,8 +1,8 @@
-import {Button, Card, Image, SimpleGrid, Text, Popover, Space} from '@mantine/core';
-import {IoAdd, IoHeart, IoHeartOutline, IoLogIn} from 'react-icons/io5';
-import { useState } from 'react';
+import { Button, Card, Image, SimpleGrid, Text, Popover, Space } from '@mantine/core';
+import { IoAdd, IoHeart, IoHeartOutline, IoLogIn } from 'react-icons/io5';
+import { SyntheticEvent, useState } from 'react';
+import { useRouter } from 'next/router';
 import Project from '../../models/Project';
-import Link from "next/link";
 
 type ProjectCardPropType = {
     project: Project;
@@ -16,11 +16,32 @@ export default function ProjectCard({
                                         onLike,
                                     }: ProjectCardPropType) {
     const [popoverOpened, setPopoverOpened] = useState(false);
+    const router = useRouter();
 
     return (
-        <Card withBorder shadow="sm" padding="lg" radius="md" key={project.id}>
+        <Card
+          withBorder
+          shadow="sm"
+          padding="lg"
+          radius="md"
+          key={project.id}
+          onClick={() => {
+            router.push(`/project/${project.id}`);
+          }}
+          sx={() => ({
+              cursor: 'pointer',
+          })}
+        >
             <Card.Section>
-                <Image src="https://picsum.photos/536/354" height={160} alt="Norway" />
+                <Image
+                  src={`http://makerhub.io:5001/files/${project.thumbnailId}?w=616&h=400`}
+                  imageProps={{
+                    loading: 'lazy',
+                }}
+                  height={200}
+                  alt="Norway"
+                  withPlaceholder
+                />
             </Card.Section>
             <Text
               sx={(theme) => ({
@@ -28,7 +49,9 @@ export default function ProjectCard({
                     marginBottom: theme.spacing.sm,
                 })}
               weight={500}
-            >{project.name}
+              lineClamp={1}
+            >
+                {project.name}
             </Text>
             <SimpleGrid cols={2}>
                 <Popover
@@ -44,25 +67,34 @@ export default function ProjectCard({
                   target={
                         <Button
                           fullWidth
-                          onClick={() => likeDisabled ? setPopoverOpened(true) :
-                              onLike(!project.isLiked)}
+                          onClick={(e: SyntheticEvent) => {
+                              e.stopPropagation();
+                              likeDisabled ? setPopoverOpened(true) :
+                                  onLike(!project.isLiked);
+                          }}
                           leftIcon={project.isLiked ? <IoHeart size="24px" /> : <IoHeartOutline size="24px" />}
                           variant="light"
                           color="red"
                         >
                             <Text sx={(theme) => ({ color: theme.colors.red[9] })}>
-                                {project.likeCount}
+                                {project.likeCount || 0}
                             </Text>
                         </Button>
                     }
                 >
                     <Text>You must be logged in to like a project</Text>
                     <Space h="sm" />
-                    <Link href={`/login?ref=${typeof window !== 'undefined' ? window.location : ''}`}>
-                        <Button fullWidth leftIcon={<IoLogIn />} component="a">
+                        <Button
+                          onClick={(e: SyntheticEvent) => {
+                            e.stopPropagation();
+                            router.push(`/login?ref=${typeof window !== 'undefined' ? window.location : ''}`);
+                        }}
+                          fullWidth
+                          leftIcon={<IoLogIn />}
+                          component="a"
+                        >
                             Login
                         </Button>
-                    </Link>
                 </Popover>
                 <Button variant="light" color="blue">
                     <IoAdd size="24px" />

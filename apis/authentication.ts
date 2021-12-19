@@ -1,7 +1,7 @@
-const base = 'http://localhost:5002';
+const base = 'http://data.makerhub.io:8080/authentication';
 
 async function LoginUser(username: string, password: string) {
-    const f = await fetch(`${base}/authentication/login`, {
+    const f = await fetch(`${base}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -14,7 +14,7 @@ async function LoginUser(username: string, password: string) {
 }
 
 async function LogoutUser() {
-    const f = await fetch(`${base}/authentication/logout`, {
+    const f = await fetch(`${base}/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

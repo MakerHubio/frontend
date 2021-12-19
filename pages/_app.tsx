@@ -1,10 +1,13 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { MantineProvider, NormalizeCSS, GlobalStyles } from '@mantine/core';
+import { MantineProvider, NormalizeCSS, GlobalStyles, ColorScheme, ColorSchemeProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import '../styles.css';
+import { useState } from 'react';
+import { useLocalStorageValue } from '@mantine/hooks';
+import { ModalsProvider } from '@mantine/modals';
 import { GlobalStore } from '../store';
 
 export default function App(props: AppProps) {
@@ -15,6 +18,14 @@ export default function App(props: AppProps) {
 
     const queryClient = new QueryClient();
 
+    const [lsColorScheme] = useLocalStorageValue<ColorScheme>({
+        key: 'color-scheme',
+        defaultValue: 'dark',
+    });
+    const [colorScheme, setColorScheme] = useState(lsColorScheme);
+    const toggleColorScheme = (value?: ColorScheme) =>
+        setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+
     return (
         <>
             <Head>
@@ -22,23 +33,27 @@ export default function App(props: AppProps) {
                 <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
             </Head>
 
-            <MantineProvider
-              theme={{
-                    /** Put your mantine theme override here */
-                    colorScheme: 'light',
-                }}
+            <ColorSchemeProvider
+              colorScheme={colorScheme as ColorScheme}
+              toggleColorScheme={toggleColorScheme}
             >
-                <NormalizeCSS />
-                <GlobalStyles />
-                <GlobalStore>
-                    <NotificationsProvider>
-                        <QueryClientProvider client={queryClient}>
-                            <Component {...pageProps} />
-                            <ReactQueryDevtools initialIsOpen />
-                        </QueryClientProvider>
-                    </NotificationsProvider>
-                </GlobalStore>
-            </MantineProvider>
+                <MantineProvider theme={{ colorScheme: colorScheme as ColorScheme }}>
+                    <ModalsProvider>
+                        <NormalizeCSS />
+                        <GlobalStyles />
+                        <GlobalStore>
+                            <NotificationsProvider>
+                                <QueryClientProvider client={queryClient}>
+                                    <Hydrate state={pageProps.dehydratedState}>
+                                        <Component {...pageProps} />
+                                        <ReactQueryDevtools initialIsOpen />
+                                    </Hydrate>
+                                </QueryClientProvider>
+                            </NotificationsProvider>
+                        </GlobalStore>
+                    </ModalsProvider>
+                </MantineProvider>
+            </ColorSchemeProvider>
         </>
     );
 }

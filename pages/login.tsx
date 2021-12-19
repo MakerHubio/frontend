@@ -9,6 +9,7 @@ import {
     Checkbox,
     Group,
     Button,
+    Anchor,
     Divider, Alert,
 } from '@mantine/core';
 import { IoAlertCircle, IoLogoApple, IoLogoGithub, IoLogoGoogle } from 'react-icons/io5';
@@ -53,8 +54,9 @@ export default function Login() {
     });
 
     return (
-        <Center sx={() => ({
+        <Center sx={theme => ({
             height: '100%',
+            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
         })}
         >
             <Card
@@ -114,8 +116,8 @@ export default function Login() {
                     <Button color="primary" loading={login.isLoading} type="submit" fullWidth>Login</Button>
                     <Space h="sm" />
                     <Group position="apart">
-                        <Button variant="link">Forgot password?</Button>
-                        <Button variant="link">Sign up</Button>
+                        <Anchor>Forgot password?</Anchor>
+                        <Anchor>Sign up</Anchor>
                     </Group>
                     <Space h="sm" />
                     <Divider label="or" labelPosition="center" />

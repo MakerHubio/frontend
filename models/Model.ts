@@ -1,6 +1,6 @@
 export default interface Model {
-    id: number;
-    createdAt: Date;
-    updateAt: Date;
-    deletedAt: Date;
+    id?: number;
+    createdAt?: Date;
+    updateAt?: Date;
+    deletedAt?: Date;
 }
