@@ -20,6 +20,7 @@
     "@mantine/notifications": "^3.3.2",
     "@mantine/prism": "^3.3.2",
     "@mantine/rte": "^3.3.2",
+    "axios": "^0.24.0",
     "dayjs": "^1.10.5",
     "framer-motion": "^5.4.1",
     "jwt-decode": "^3.1.2",
@@ -30,6 +31,7 @@
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1",
     "react-query": "^3.29.0",
+    "react-use": "^17.3.1",
     "three": "^0.134.0"
   },
   "devDependencies": {

@@ -34,7 +34,7 @@ export default function ProjectCard({
         >
             <Card.Section>
                 <Image
-                  src={`http://makerhub.io:5001/files/${project.thumbnailId}?w=616&h=400`}
+                  src={`http://127.0.0.1:5001/files/${project.thumbnailId}?w=616&h=400`}
                   imageProps={{
                     loading: 'lazy',
                 }}

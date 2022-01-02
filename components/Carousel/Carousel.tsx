@@ -1,12 +1,32 @@
-import { Card, Group, Image, Box } from '@mantine/core';
+import { Card, Group, Box } from '@mantine/core';
 import dynamic from 'next/dynamic';
-import React from 'react';
+import React, { ReactElement, useState } from 'react';
 import PreviewImage from './PreviewImage';
 
-function Carousel() {
+export type CarouselItem = {
+    mediaType: string,
+    src: string
+};
+
+type CarouselProps = {
+    items: CarouselItem[],
+};
+
+function Carousel(props: CarouselProps) {
     const Model = dynamic(
         () => import('../ModelViewer/ModelViewer'),
         { ssr: false }
+    );
+
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const getPreviewItems = () => props.items?.map((item, index) =>
+      <PreviewImage
+        src={`${item.src}?w=64&h=48`}
+        mediaType={item.mediaType}
+        active={index === activeIndex}
+        onClick={() => setActiveIndex(index)}
+      />
     );
 
     return <Group position="center" direction="column">
@@ -23,10 +43,7 @@ function Carousel() {
             </Card>
         </Box>
         <Group m={0}>
-            <PreviewImage mediaType="video" src="https://picsum.photos/id/1000/64/48" active />
-            <PreviewImage src="https://picsum.photos/64/48" />
-            <PreviewImage src="https://picsum.photos/64/48" />
-            <PreviewImage mediaType="model" src="https://picsum.photos/64/48" />
+            { getPreviewItems() }
         </Group>
            </Group>;
 }

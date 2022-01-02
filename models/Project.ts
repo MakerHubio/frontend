@@ -20,9 +20,42 @@ export interface ProjectTag extends Model {
 
 export interface ProjectFile extends Model {
     name: string;
+    fileId: string;
     thumbnailId: string;
     fileType: string;
     size: number;
     order: number;
-    gltf_file_id: string;
+    gltfFileId: string;
+}
+
+export interface CreateProjectRequestFile {
+    fieldName: string,
+    thumbnailFieldName?: string,
+    meta: AddProjectFileRequest,
+}
+
+export interface CreateProjectRequest {
+    thumbnails: CreateProjectRequestFile[],
+    files: CreateProjectRequestFile[],
+    project: Project,
+}
+
+export interface AddProjectFileRequest {
+    projectId?: string,
+    name: string,
+    isProjectThumbnail: boolean,
+    thumbnailId?: string,
+    order?: number
+}
+
+export interface GetProjectsResponse {
+    projects: Project[]
+}
+
+export type AddProjectFile = File & {
+    thumbnail: string;
+};
+
+export interface ProjectFilter {
+    CreatorId?: string;
 }

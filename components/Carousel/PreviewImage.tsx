@@ -2,16 +2,15 @@ import { Card, Image, Box } from '@mantine/core';
 import { IoCube, IoImage, IoPlay } from 'react-icons/io5';
 import { ReactElement } from 'react';
 
-type MediaType = 'video' | 'image' | 'model';
-
 type PreviewImageProps = {
     src: string,
     active?: boolean,
-    mediaType?: MediaType,
+    mediaType?: string,
+    onClick: () => void,
 };
 
 export default function PreviewImage(props: PreviewImageProps) {
-    const getMediaTypeIcon = (mediaType: MediaType): ReactElement => {
+    const getMediaTypeIcon = (mediaType: string): ReactElement => {
         switch (mediaType) {
             case 'image':
                 return <IoImage fill="white" />;
@@ -29,6 +28,7 @@ export default function PreviewImage(props: PreviewImageProps) {
       radius="md"
       mr="xs"
       withBorder={props.active}
+      onClick={props.onClick}
       sx={theme => ({
                      borderColor: theme.colors.blue[5],
                      borderWidth: 2,

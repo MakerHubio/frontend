@@ -29,9 +29,10 @@ import { motion, useAnimation } from 'framer-motion';
 import { useModals } from '@mantine/modals';
 import { ModelViewerElement, RGBA } from '@google/model-viewer/lib/model-viewer';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import humanFileSize from '../../../utils/fileSize';
-import useAudio from '../../../utils/audio';
+import { useAudio } from 'react-use';
 import { hexToRgbA } from '../../../utils/color';
+import { AddProjectFile } from '../../../models/Project';
+import { humanFileSize } from '../../../utils/file';
 
 type FileSectionSectionProps = {};
 export type FileSectionElement = {
@@ -41,10 +42,6 @@ export type FileSectionElement = {
 type ImageUploadIconProps = {
   status: DropzoneStatus;
   [key: string]: any;
-};
-
-type AddProjectFile = File & {
-  thumbnail: string;
 };
 
 function ImageUploadIcon({
@@ -132,7 +129,10 @@ function FileSection(props: FileSectionSectionProps, ref: Ref<FileSectionElement
 
   const modals = useModals();
   const modelRef = useRef<ModelViewerElement>();
-  const [, toggle] = useAudio('/shutter.mp3');
+  const [audio, , audioControls] = useAudio({
+    src: '/shutter.mp3',
+    autoPlay: false,
+  });
   const { classes } = useStyles();
   const controls = useAnimation();
 
@@ -226,8 +226,8 @@ function FileSection(props: FileSectionSectionProps, ref: Ref<FileSectionElement
             />
             <Button
               onClick={() => {
-                files[index].thumbnail = modelRef.current!.toDataURL();
-                toggle();
+                files[index].thumbnail = modelRef.current!.toDataURL('image/png');
+                audioControls.play();
                 controls.start({
                   opacity: [1, 0],
                   transition: {
@@ -309,7 +309,7 @@ function FileSection(props: FileSectionSectionProps, ref: Ref<FileSectionElement
                   <Text color="dimmed" size="sm">{humanFileSize(file.size, true)}</Text>
                 </Group>
                 <Group>
-                  {file.type === 'model/stl' ?
+                  {file.name.endsWith('.stl') ?
                     <ActionIcon onClick={() => openPreviewModal(index)}>
                       <IoCog />
                     </ActionIcon> : null}
@@ -339,6 +339,7 @@ function FileSection(props: FileSectionSectionProps, ref: Ref<FileSectionElement
     ));
 
   return <>
+    {audio}
     <Alert
       title="Attention"
       icon={<IoInformationCircle />}
@@ -349,7 +350,7 @@ function FileSection(props: FileSectionSectionProps, ref: Ref<FileSectionElement
     <Space h="sm" />
     <Dropzone
       onDrop={(droppedFiles: AddProjectFile[]) => addFile(...droppedFiles)}
-      accept={[...IMAGE_MIME_TYPE, 'model/stl', 'application/pdf']}
+      accept={[...IMAGE_MIME_TYPE, 'model/stl', 'model/x.stl-binary', 'model/x.stl-ascii', '.stl', 'application/pdf']}
     >
       {(status) => (
         <Group

@@ -1,4 +1,4 @@
-const base = 'http://data.makerhub.io:8080/authentication';
+const base = 'http://data.makerhub.io/authentication';
 
 async function LoginUser(username: string, password: string) {
     const f = await fetch(`${base}/login`, {

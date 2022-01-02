@@ -28,7 +28,7 @@ import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { dehydrate, QueryClient, useQuery } from 'react-query';
 import Shell from '../../../components/Shell/Shell';
-import Carousel from '../../../components/Carousel/Carousel';
+import Carousel, { CarouselItem } from '../../../components/Carousel/Carousel';
 import { GetProject } from '../../../apis/projects';
 import ProjectModel from '../../../models/Project';
 import ApiError from '../../../models/ApiError';
@@ -37,15 +37,16 @@ import FilesSection from '../../../components/FilesSection/FilesSection';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const queryClient = new QueryClient();
+    let data: ProjectModel | ApiError | undefined;
 
     if (context.params !== undefined && context.params.id !== undefined) {
         const { id } = context.params;
 
         await queryClient.prefetchQuery('project', () => GetProject((id as string)));
 
-        const data = await queryClient.getQueryData('project');
+        data = await queryClient.getQueryData('project');
 
-        if ((data as ApiError).statusCode === 404) {
+        if (data === undefined || data.statusCode === 404) {
             return {
                 redirect: {
                     destination: '/404',
@@ -65,6 +66,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
         props: {
             dehydratedState: dehydrate(queryClient),
+            project: data,
         },
     };
 };
@@ -95,11 +97,19 @@ export default function Project(props: ProjectProps) {
     });
 
     const [tabIndex, setTabIndex] = useState(0);
+    const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
 
     useEffect(() => {
        if (router.asPath.includes('#comments')) {
            setTabIndex(2);
        }
+
+       const cItems = props.project.files?.map<CarouselItem>(file => ({
+           src: `http://localhost:5001/files/${file.thumbnailId === '' ? file.fileId : file.thumbnailId}`,
+           mediaType: file.fileType,
+       }));
+
+       if (cItems !== undefined) setCarouselItems(cItems);
     }, []);
 
     useEffect(() => {
@@ -114,8 +124,9 @@ export default function Project(props: ProjectProps) {
         switch (tabIndex) {
             case 0:
                 return <Card radius="md" shadow="md" withBorder padding="sm">
-                    <Text color={data === undefined || data.description === '' ? 'gray' : 'black'}>
-                        {data === undefined || data.description === '' ? 'No description' : data.description}
+                    <Text mx="sm" color={data === undefined || data.description === '' ? 'gray' : 'black'}>
+                        {data === undefined || data.description === '' ? 'No description' :
+                          <div dangerouslySetInnerHTML={{ __html: data.description as string }} />}
                     </Text>
                        </Card>;
             case 1:
@@ -150,7 +161,7 @@ export default function Project(props: ProjectProps) {
             <Space h="md" />
             <Grid>
                 <Col span={8}>
-                    <Carousel />
+                    <Carousel items={carouselItems} />
                 </Col>
                 <Col span={4}>
                     <Card shadow="md" radius="md" withBorder>

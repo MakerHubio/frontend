@@ -1,4 +1,4 @@
 export default interface JWTUser {
-    userId: number;
+    userId: string;
     username: string;
 }

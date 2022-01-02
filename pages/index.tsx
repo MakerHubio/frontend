@@ -3,44 +3,31 @@ import {
     Container,
     Title,
     SimpleGrid,
-    Text,
-    Button,
-    AppShell,
-    Header,
-    Group,
-    ThemeIcon,
-    Space, UnstyledButton, Avatar, createStyles, Menu,
 } from '@mantine/core';
 import { useMutation, useQuery } from 'react-query';
 import { useContext, useEffect, useState } from 'react';
-import { IoHardwareChip, IoChevronDown, IoLogOut, IoPerson } from 'react-icons/io5';
-import Link from 'next/link';
-import jwt_decode from 'jwt-decode';
-import { useRouter } from 'next/router';
-import { CreateProject, GetProjects, SetLikeProject } from '../apis/projects';
+import { AxiosResponse } from 'axios';
+import { GetProjects, SetLikeProject } from '../apis/projects';
 import { globalContext } from '../store';
-import { LogoutUser } from '../apis/authentication';
 import ProjectCard from '../components/ProjectCard/ProjectCard';
 import Shell from '../components/Shell/Shell';
+import { GetProjectsResponse } from '../models/Project';
 
 export default function Home() {
-    const { globalState, dispatch } = useContext(globalContext);
+    const { globalState } = useContext(globalContext);
 
     const [projects, setProjects] = useState<any[]>([]);
 
-    const { data } = useQuery('projects', GetProjects);
+    const { data: projectsResponse } = useQuery<AxiosResponse<GetProjectsResponse>>(['projects'], () => GetProjects());
 
     const setLike = useMutation((like: any) =>
         SetLikeProject(like.project_id, like.user_id, like.like));
 
-    const createProject = useMutation((name: string) =>
-        CreateProject(name));
-
     useEffect(() => {
-        if (data !== undefined) {
-            setProjects(data.projects);
+        if (projectsResponse !== undefined) {
+            setProjects(projectsResponse.data.projects);
         }
-    }, [data]);
+    }, [projectsResponse]);
 
     const projectCards: any = projects?.map((project: any, index: number) =>
         <ProjectCard
