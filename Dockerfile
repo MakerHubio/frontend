@@ -38,7 +38,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
-# COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/next.config.js ./
 COPY --from=builder /public ./public
 COPY --from=builder /package.json ./package.json
 
@@ -46,6 +46,8 @@ COPY --from=builder /package.json ./package.json
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /.next/static ./.next/static
+
+RUN yarn add node-fetch
 
 USER nextjs
 
