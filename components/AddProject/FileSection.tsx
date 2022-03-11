@@ -165,7 +165,7 @@ export default function FileSection({ files, onFilesChanged }: FileSectionSectio
             <Paper
               withBorder
               radius="md"
-              padding="sm"
+              p="sm"
               sx={t => ({
                 width: '100%',
                 borderColor: snapshot.isDragging ? t.colors.blue[5] : t.colorScheme === 'light' ? t.colors.gray[2] : t.colors.gray[8],

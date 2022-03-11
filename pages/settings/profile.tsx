@@ -169,7 +169,7 @@ export default function ProfileSettings() {
                   multiple={false}
                   accept={IMAGE_MIME_TYPE}
                   openRef={openRef}
-                  padding={0}
+                  p={0}
                   radius="lg"
                   sx={() => ({
                   border: 'none',
@@ -204,7 +204,7 @@ export default function ProfileSettings() {
                   multiple={false}
                   accept={IMAGE_MIME_TYPE}
                   openRef={openRef}
-                  padding={0}
+                  p={0}
                   radius="lg"
                   sx={() => ({
                     border: 'none',

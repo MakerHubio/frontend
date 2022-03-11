@@ -132,7 +132,7 @@ export default function AddProject() {
           >
             <Title>Add Project</Title>
             <Space h="sm" />
-            <Paper radius="md" shadow="md" withBorder padding="sm">
+            <Paper radius="md" shadow="md" withBorder p="sm">
               <Accordion disableIconRotation initialItem={0} offsetIcon={false} multiple>
                 <Accordion.Item
                   label="General information"

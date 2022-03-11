@@ -204,7 +204,7 @@ export default function AddProjectThumbnails(props: AddProjectThumbnailsProps) {
         radius="md"
         my="sm"
         shadow="sm"
-        padding="sm"
+        p="sm"
         sx={theme => ({
           width: '100%',
           transition: 'box-shadow .25s ease-out',

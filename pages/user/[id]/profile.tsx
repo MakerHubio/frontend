@@ -99,7 +99,7 @@ export default function UserProfile(props: UserProfileProps) {
       {globalState.loggedUser?.userId === props.profile.id ? <Card
         radius="md"
         shadow="md"
-        padding="sm"
+        p="sm"
         withBorder
         sx={(theme) => ({
           borderColor: theme.colors.blue[5],
@@ -147,7 +147,7 @@ export default function UserProfile(props: UserProfileProps) {
             radius="md"
             shadow="md"
             withBorder
-            padding="md"
+            p="md"
             sx={() => ({
               display: 'flex',
               flexDirection: 'row',
@@ -176,7 +176,7 @@ export default function UserProfile(props: UserProfileProps) {
             </Box>
           </Card>
           <Space h="md"/>
-          <Card radius="md" shadow="md" withBorder padding="md">
+          <Card radius="md" shadow="md" withBorder p="md">
             <Text weight="bold">About</Text>
             <Space h="sm"/>
             <Text>{props.profile.bio}</Text>
@@ -196,7 +196,7 @@ export default function UserProfile(props: UserProfileProps) {
           xs={12}
           grow
         >
-          <Card radius="md" shadow="md" withBorder padding="sm">
+          <Card radius="md" shadow="md" withBorder p="sm">
             <Group position="apart">
               <Tabs variant="pills">
                 <Tab label="Projects" icon={<IoBuild/>}/>

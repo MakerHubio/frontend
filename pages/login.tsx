@@ -62,7 +62,7 @@ export default function Login() {
             <Card
               radius="md"
               shadow="sm"
-              padding="lg"
+              p="lg"
               withBorder
               sx={() => ({
                 width: 450,

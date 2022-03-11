@@ -32,7 +32,7 @@ export default function NotificationsSettings() {
                     <SettingsMenu active={5} />
                 </Col>
                 <Col span={9}>
-                    <Paper radius="md" withBorder shadow="md" padding="sm">
+                    <Paper radius="md" withBorder shadow="md" p="sm">
                         <Title order={3}>Notifications</Title>
                         <Divider mb="sm" />
                     </Paper>
