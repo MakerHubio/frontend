@@ -10,6 +10,7 @@ async function UploadFile(name: string, file: Blob,
   const formData = new FormData();
 
   formData.append('name', name);
+  formData.append('content-type', file.type);
   formData.append('file', file.slice(0, file.size, file.type));
 
   return axios({

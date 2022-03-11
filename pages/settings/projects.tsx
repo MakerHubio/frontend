@@ -143,7 +143,7 @@ export default function ProjectsSettings() {
           <SettingsMenu active={2} />
         </Col>
         <Col span={9}>
-          <Paper radius="md" withBorder shadow="md" padding="sm">
+          <Paper radius="md" withBorder shadow="md" p="sm">
             <Title order={3}>Projects</Title>
             <Divider mb="sm" />
             { getContent() }

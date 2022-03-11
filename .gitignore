@@ -32,3 +32,8 @@ yarn-error.log*
 
 # vercel
 .vercel
+/public/3DBenchy.stl
+/public/Astronaut.glb
+/public/Gengar.stl
+/public/ghost.stl
+/public/scene.gltf

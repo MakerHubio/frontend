@@ -5,6 +5,7 @@ html, body, #__next {
 
 model-viewer {
     width: 100%;
-    height: 450px;
+    height: 100%;
     background: transparent;
+    --poster-color: #ffffff00;
 }

@@ -1,3 +1,15 @@
+const TinyGraphsThemes = [
+  'sugarsweets',
+  'heatwave',
+  'daisygarden',
+  'seascape',
+  'summerwarmth',
+  'bythepool',
+  'duskfalling',
+  'frogideas',
+  'berrypie',
+];
+
 const CountryListAllIsoData = [
     { code: 'AF', code3: 'AFG', name: 'Afghanistan', number: '004' },
     { code: 'AL', code3: 'ALB', name: 'Albania', number: '008' },
@@ -252,4 +264,5 @@ const CountryListAllIsoData = [
 
 export {
     CountryListAllIsoData,
+    TinyGraphsThemes,
 };

@@ -45,7 +45,7 @@ export default function AppearanceSettings() {
                     <SettingsMenu active={3} />
                 </Col>
                 <Col span={9}>
-                    <Paper radius="md" withBorder shadow="md" padding="sm">
+                    <Paper radius="md" withBorder shadow="md" p="sm">
                         <Title order={3}>Theme</Title>
                         <Divider mb="sm" />
                         <Text>Choose how MakerHub looks to you. You can select a single theme,

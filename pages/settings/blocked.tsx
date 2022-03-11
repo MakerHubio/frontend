@@ -5,10 +5,9 @@ import {
     Title,
     Col,
     Space,
-    Text,
-    Paper, Divider, TextInput, Group, Button, Center,
+    Paper,
+    Divider,
 } from '@mantine/core';
-import {IoAdd, IoMail} from 'react-icons/io5';
 import Shell from '../../components/Shell/Shell';
 import SettingsMenu from '../../components/Settings/Menu';
 
@@ -32,7 +31,7 @@ export default function BlockedSettings() {
                     <SettingsMenu active={6} />
                 </Col>
                 <Col span={9}>
-                    <Paper radius="md" withBorder shadow="md" padding="sm">
+                    <Paper radius="md" withBorder shadow="md" p="sm">
                         <Title order={3}>Blocked Users</Title>
                         <Divider mb="sm" />
                     </Paper>

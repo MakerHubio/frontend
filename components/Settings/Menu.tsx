@@ -16,7 +16,7 @@ export default function SettingsMenu({ active }: SettingsMenuProps) {
     const router = useRouter();
     const { classes } = useStyles();
 
-    return <Paper radius="md" withBorder shadow="md" padding="sm">
+    return <Paper radius="md" withBorder shadow="md" p="sm">
         <Group direction="column" spacing={2} grow>
             <Button
               className={classes.menuButton}

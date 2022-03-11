@@ -117,7 +117,7 @@ export default function Login() {
                     <Space h="sm" />
                     <Group position="apart">
                         <Anchor>Forgot password?</Anchor>
-                        <Anchor>Sign up</Anchor>
+                        <Anchor href="/register">Sign up</Anchor>
                     </Group>
                     <Space h="sm" />
                     <Divider label="or" labelPosition="center" />

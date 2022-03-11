@@ -1,4 +1,16 @@
+import axios, { AxiosResponse } from 'axios';
+import { RegisterRequest } from '../models/authentication';
+
 const base = 'http://data.makerhub.io/authentication';
+
+async function RegisterUser(register: RegisterRequest): Promise<AxiosResponse<string>> {
+    return axios(`${base}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+        data: register,
+    });
+}
 
 async function LoginUser(username: string, password: string) {
     const f = await fetch(`${base}/login`, {
@@ -23,6 +35,7 @@ async function LogoutUser() {
 }
 
 export {
+    RegisterUser,
     LoginUser,
     LogoutUser,
 };

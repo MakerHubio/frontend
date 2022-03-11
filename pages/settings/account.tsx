@@ -32,7 +32,7 @@ export default function AccountSettings() {
                     <SettingsMenu active={1} />
                 </Col>
                 <Col span={9}>
-                    <Paper radius="md" withBorder shadow="md" padding="sm">
+                    <Paper radius="md" withBorder shadow="md" p="sm">
                         <Title order={3}>E-Mail</Title>
                         <Divider mb="sm" />
                         <TextInput label="E-Mail Address" icon={<IoMail />} disabled />

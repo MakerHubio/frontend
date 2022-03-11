@@ -1,24 +1,23 @@
 import axios, { AxiosResponse } from 'axios';
 import Project, {
-  AddProjectFileRequest,
   CreateProjectRequest,
   GetProjectsResponse,
-  ProjectFilter,
+  ProjectFilter, UpdateProjectFilesRequest,
 } from '../models/Project';
 import getCookie from '../utils/cookie';
 import { IdResponse } from '../models/Api';
-import ApiError from "../models/ApiError";
+import { LikeCommentRequest, ProjectComment, QueryCommentsRequest } from '../models/ProjectComment';
 
 //const base = 'http://data.makerhub.io:8080/projects';
 const base = 'http://127.0.0.1:5002/projects';
 
+//region Projects
 async function CreateProject(projectRequest: CreateProjectRequest, files: Map<string, File>,
                              onUploadProgress?: (progressEvent: any) => void):
   Promise<AxiosResponse<IdResponse>> {
   const formData = new FormData();
 
   formData.append('data', JSON.stringify(projectRequest));
-  //formData.append('file', file.slice(0, file.size, file.type));
 
   files.forEach((value, key) => {
     formData.append(key, value.slice(0, value.size, value.type));
@@ -49,12 +48,15 @@ async function GetProjects(filter: ProjectFilter = { CreatorId: '' }): Promise<A
   });
 }
 
-async function GetProject(id: string): Promise<Project> {
-  const f = await fetch(`${base}/${id}`, {
+async function GetProject(id: string, token?: string): Promise<AxiosResponse<Project>> {
+  return axios(`${base}/${id}`, {
     method: 'GET',
-    credentials: 'include',
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: typeof (document) !== 'undefined' ? getCookie('mh_authorization') : token ?? '',
+    },
   });
-  return f.json();
 }
 
 async function RemoveProject(id: string) {
@@ -69,7 +71,7 @@ async function RemoveProject(id: string) {
   return f.text();
 }
 
-async function SetLikeProject(projectId: number, userId: number, like: boolean) {
+async function SetLikeProject(projectId: string, like: boolean) {
   const f = await fetch(`${base}/like`, {
     method: 'POST',
     headers: {
@@ -78,38 +80,89 @@ async function SetLikeProject(projectId: number, userId: number, like: boolean) 
     },
     body: JSON.stringify({
       projectId,
-      userId,
       like,
     }),
   });
   return f.json();
 }
 
-async function AddProjectFile(file: Blob,
-                              projectFileRequest: AddProjectFileRequest,
-                              onUploadProgress?:
-                                (progressEvent: any) => void): Promise<AxiosResponse<IdResponse>> {
+async function UpdateProjectFiles(updateProjectFilesRequest: UpdateProjectFilesRequest,
+                                  files: Map<string, File>,
+                                  onUploadProgress?: (progressEvent: any) => void):
+  Promise<AxiosResponse<IdResponse>> {
   const formData = new FormData();
 
-  formData.append('data', JSON.stringify(projectFileRequest));
-  formData.append('file', file.slice(0, file.size, file.type));
+  formData.append('data', JSON.stringify(updateProjectFilesRequest));
+  //formData.append('file', file.slice(0, file.size, file.type));
+
+  files.forEach((value, key) => {
+    formData.append(key, value.slice(0, value.size, value.type));
+  });
 
   return axios({
-    method: 'post',
-    url: `${base}/file`,
+    url: `${base}/files`,
+    method: 'put',
+    data: formData,
+    withCredentials: true,
+    onUploadProgress,
     headers: {
+      'Content-Type': 'application/json',
       Authorization: getCookie('mh_authorization'),
     },
-    data: formData,
-    onUploadProgress,
   });
 }
+//endregion
+
+//region Comments
+async function CreateComment(comment: ProjectComment): Promise<AxiosResponse<IdResponse>> {
+  return axios({
+    url: `${base}/${comment.projectId}/comments`,
+    method: 'POST',
+    data: comment,
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: getCookie('mh_authorization'),
+    },
+  });
+}
+
+async function QueryComments(request: QueryCommentsRequest):
+  Promise<AxiosResponse<ProjectComment[]>> {
+  return axios({
+    url: `${base}/${request.projectId}/comments/query`,
+    method: 'POST',
+    data: request,
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: getCookie('mh_authorization'),
+    },
+  });
+}
+
+async function LikeComment(request: LikeCommentRequest): Promise<AxiosResponse> {
+  return axios({
+    url: `${base}/comments/like`,
+    method: 'POST',
+    data: request,
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: getCookie('mh_authorization'),
+    },
+  });
+}
+//endregion
 
 export {
   CreateProject,
   GetProjects,
   SetLikeProject,
   GetProject,
-  AddProjectFile,
+  UpdateProjectFiles,
   RemoveProject,
+  CreateComment,
+  QueryComments,
+  LikeComment,
 };

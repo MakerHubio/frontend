@@ -1,5 +1,6 @@
 import Model from './Model';
-import User from './User';
+import { User } from './User';
+import { Hotspot } from '../components/ModelViewer/ModelViewer';
 
 export default interface Project extends Model {
     name: string;
@@ -25,7 +26,20 @@ export interface ProjectFile extends Model {
     fileType: string;
     size: number;
     order: number;
-    gltfFileId: string;
+    extension: string;
+    hotspots: Hotspot[];
+    gltf?: Gltf;
+}
+
+export interface Gltf {
+    fileId: string;
+    color: string;
+    cameraSettings: {
+        theta: number;
+        phi: number;
+        radius: number;
+        fov: number;
+    }
 }
 
 export interface CreateProjectRequestFile {
@@ -35,7 +49,6 @@ export interface CreateProjectRequestFile {
 }
 
 export interface CreateProjectRequest {
-    thumbnails: CreateProjectRequestFile[],
     files: CreateProjectRequestFile[],
     project: Project,
 }
@@ -44,7 +57,6 @@ export interface AddProjectFileRequest {
     projectId?: string,
     name: string,
     isProjectThumbnail: boolean,
-    thumbnailId?: string,
     order?: number
 }
 
@@ -58,4 +70,14 @@ export type AddProjectFile = File & {
 
 export interface ProjectFilter {
     CreatorId?: string;
+}
+
+export interface UpdateProjectFilesRequest {
+    projectId: string,
+    thumbnails: { [key: string]: string },
+    projectFiles: ProjectFile[],
+    filesToUpload: {
+        fieldName: string,
+        meta: AddProjectFileRequest,
+    }[]
 }

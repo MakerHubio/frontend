@@ -32,7 +32,7 @@ export default function SecuritySettings() {
                     <SettingsMenu active={4} />
                 </Col>
                 <Col span={9}>
-                    <Paper radius="md" withBorder shadow="md" padding="sm">
+                    <Paper radius="md" withBorder shadow="md" p="sm">
                         <Title order={3}>Change password</Title>
                         <Divider mb="sm" />
                         <TextInput label="Old password" icon={<IoLockClosed />} />
