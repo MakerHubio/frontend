@@ -3,6 +3,9 @@ module.exports = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    outputStandalone: true,
+  },
   async redirects() {
     return [
       {
