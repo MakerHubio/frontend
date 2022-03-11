@@ -31,6 +31,7 @@ import { AxiosResponse } from 'axios';
 import Head from 'next/head';
 import jwt_decode from 'jwt-decode';
 import JWTUser from '../../../../models/JWTUser';
+import { GetFileUrl } from '../../../../apis/files';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const queryClient = new QueryClient();
@@ -273,7 +274,7 @@ export default function AddProjectThumbnails(props: AddProjectThumbnailsProps) {
                     radius: files[index].gltf!.cameraSettings.radius,
                     fov: files[index].gltf!.cameraSettings.fov,
                   } : undefined}
-                  url={`http://localhost:5001/files/${files[index].gltf?.fileId}`}
+                  url={GetFileUrl(files[index].gltf?.fileId!)}
                 /> : null}
               </Paper>
             </Col>

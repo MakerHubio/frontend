@@ -3,12 +3,10 @@ import axios, { AxiosResponse } from 'axios';
 import getCookie from '../utils/cookie';
 import { UserProfile } from '../models/User';
 
-const base = 'http://data.makerhub.io/users';
-
 const GenerateAvatarUrl = (userId: string, size = 256) => `data:image/png;base64,${new Identicon(userId, size).toString()}`;
 
 async function GetUserProfile(id: string, token?: string): Promise<AxiosResponse<UserProfile>> {
-  return axios(`${base}/profile/${id}`, {
+  return axios(`${process.env.NEXT_PUBLIC_USERS_PATH}/profile/${id}`, {
     method: 'GET',
     withCredentials: true,
     headers: {
@@ -19,7 +17,7 @@ async function GetUserProfile(id: string, token?: string): Promise<AxiosResponse
 }
 
 async function UpdateUserProfile(userProfile: UserProfile): Promise<AxiosResponse<UserProfile>> {
-  return axios(`${base}/profile`, {
+  return axios(`${process.env.NEXT_PUBLIC_USERS_PATH}/profile`, {
     method: 'PUT',
     withCredentials: true,
     data: userProfile,

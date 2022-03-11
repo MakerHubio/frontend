@@ -8,9 +8,6 @@ import getCookie from '../utils/cookie';
 import { IdResponse } from '../models/Api';
 import { LikeCommentRequest, ProjectComment, QueryCommentsRequest } from '../models/ProjectComment';
 
-//const base = 'http://data.makerhub.io:8080/projects';
-const base = 'http://127.0.0.1:5002/projects';
-
 //region Projects
 async function CreateProject(projectRequest: CreateProjectRequest, files: Map<string, File>,
                              onUploadProgress?: (progressEvent: any) => void):
@@ -24,7 +21,7 @@ async function CreateProject(projectRequest: CreateProjectRequest, files: Map<st
   });
 
   return axios({
-    url: `${base}/`,
+    url: `${process.env.NEXT_PUBLIC_PROJECTS_PATH}/`,
     method: 'post',
     data: formData,
     withCredentials: true,
@@ -37,7 +34,7 @@ async function CreateProject(projectRequest: CreateProjectRequest, files: Map<st
 }
 
 async function GetProjects(filter: ProjectFilter = { CreatorId: '' }): Promise<AxiosResponse<GetProjectsResponse>> {
-  return axios(`${base}/query`, {
+  return axios(`${process.env.NEXT_PUBLIC_PROJECTS_PATH}/query`, {
     method: 'POST',
     withCredentials: true,
     data: filter,
@@ -49,7 +46,7 @@ async function GetProjects(filter: ProjectFilter = { CreatorId: '' }): Promise<A
 }
 
 async function GetProject(id: string, token?: string): Promise<AxiosResponse<Project>> {
-  return axios(`${base}/${id}`, {
+  return axios(`${process.env.NEXT_PUBLIC_PROJECTS_PATH}/${id}`, {
     method: 'GET',
     withCredentials: true,
     headers: {
@@ -60,7 +57,7 @@ async function GetProject(id: string, token?: string): Promise<AxiosResponse<Pro
 }
 
 async function RemoveProject(id: string) {
-  const f = await fetch(`${base}/${id}`, {
+  const f = await fetch(`${process.env.NEXT_PUBLIC_PROJECTS_PATH}/${id}`, {
     method: 'DELETE',
     credentials: 'include',
     headers: {
@@ -72,7 +69,7 @@ async function RemoveProject(id: string) {
 }
 
 async function SetLikeProject(projectId: string, like: boolean) {
-  const f = await fetch(`${base}/like`, {
+  const f = await fetch(`${process.env.NEXT_PUBLIC_PROJECTS_PATH}/like`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -100,7 +97,7 @@ async function UpdateProjectFiles(updateProjectFilesRequest: UpdateProjectFilesR
   });
 
   return axios({
-    url: `${base}/files`,
+    url: `${process.env.NEXT_PUBLIC_PROJECTS_PATH}/files`,
     method: 'put',
     data: formData,
     withCredentials: true,
@@ -116,7 +113,7 @@ async function UpdateProjectFiles(updateProjectFilesRequest: UpdateProjectFilesR
 //region Comments
 async function CreateComment(comment: ProjectComment): Promise<AxiosResponse<IdResponse>> {
   return axios({
-    url: `${base}/${comment.projectId}/comments`,
+    url: `${process.env.NEXT_PUBLIC_PROJECTS_PATH}/${comment.projectId}/comments`,
     method: 'POST',
     data: comment,
     withCredentials: true,
@@ -130,7 +127,7 @@ async function CreateComment(comment: ProjectComment): Promise<AxiosResponse<IdR
 async function QueryComments(request: QueryCommentsRequest):
   Promise<AxiosResponse<ProjectComment[]>> {
   return axios({
-    url: `${base}/${request.projectId}/comments/query`,
+    url: `${process.env.NEXT_PUBLIC_PROJECTS_PATH}/${request.projectId}/comments/query`,
     method: 'POST',
     data: request,
     withCredentials: true,
@@ -143,7 +140,7 @@ async function QueryComments(request: QueryCommentsRequest):
 
 async function LikeComment(request: LikeCommentRequest): Promise<AxiosResponse> {
   return axios({
-    url: `${base}/comments/like`,
+    url: `${process.env.NEXT_PUBLIC_PROJECTS_PATH}/comments/like`,
     method: 'POST',
     data: request,
     withCredentials: true,

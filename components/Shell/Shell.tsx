@@ -34,6 +34,7 @@ import { LogoutUser } from '../../apis/authentication';
 import getCookie from '../../utils/cookie';
 import JWTUser from '../../models/JWTUser';
 import { GenerateAvatarUrl } from '../../apis/users';
+import { GetFileUrl } from '../../apis/files';
 
 type ShellProps = {
   noPadding?: boolean,
@@ -91,7 +92,7 @@ export default function Shell(props: PropsWithChildren<ShellProps>) {
     if (cookie_data.avatarId === '') {
       setAvatar(GenerateAvatarUrl(cookie_data.userId, 64));
     } else {
-      setAvatar(`http://localhost:5001/files/${cookie_data.avatarId}?w=64&h=64`);
+      setAvatar(`${GetFileUrl(cookie_data.avatarId)}?w=64&h=64`);
     }
   }, []);
 

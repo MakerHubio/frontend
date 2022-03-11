@@ -4,6 +4,7 @@ import DropdownButton from '../DropdownButton/DropdownButton';
 import { ProjectFile } from '../../models/Project';
 import { humanFileSize } from '../../utils/file';
 import { useListState } from '@mantine/hooks';
+import { GetFileUrl } from '../../apis/files';
 
 type FilesSectionProps = {
     files: ProjectFile[],
@@ -32,7 +33,7 @@ export default function FilesSection(props: FilesSectionProps) {
                       height={80}
                       withPlaceholder
                       radius="md"
-                      src={`http://localhost:5001/files/${file.thumbnailId}?h=80&w=120`} />
+                      src={`${GetFileUrl(file.thumbnailId)}?h=80&w=120`} />
                     <Group>
                         <Text weight="bold">{file.name}</Text>
                     </Group>
@@ -40,7 +41,7 @@ export default function FilesSection(props: FilesSectionProps) {
                 <Group>
                     <Text size="sm" color="gray">{humanFileSize(file.size, true)}</Text>
                     <Tooltip label="Download file">
-                        <ActionIcon component="a" href={`http://localhost:5002/projects/${props.projectId}/download?type=file&id=${file.fileId}`} variant="filled" color="blue">
+                        <ActionIcon component="a" href={`${process.env.NEXT_PUBLIC_PROJECTS_PATH}/${props.projectId}/download?type=file&id=${file.fileId}`} variant="filled" color="blue">
                             <IoDownload />
                         </ActionIcon>
                     </Tooltip>

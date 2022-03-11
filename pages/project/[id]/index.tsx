@@ -34,6 +34,7 @@ import { AxiosResponse } from 'axios';
 import Head from 'next/head';
 import UserAvatar from '../../../components/UserAvatar';
 import { useSetState } from 'react-use';
+import { GetFileUrl } from '../../../apis/files';
 
 const TABS = ['description', 'files', 'comments', 'remixes'];
 
@@ -88,8 +89,8 @@ export default function Project(props: ProjectProps) {
 
   useEffect(() => {
     const cItems = props.project.files?.map<CarouselItem>(file => ({
-      src: `http://localhost:5001/files/${file.fileType === 'image/png' ? file.fileId : file.gltf?.fileId}`,
-      thumbnailSrc: file.thumbnailId !== '' ? `http://localhost:5001/files/${file.thumbnailId}` : '',
+      src: `${GetFileUrl(file.fileType === 'image/png' ? file.fileId : file.gltf?.fileId!)}`,
+      thumbnailSrc: file.thumbnailId !== '' ? `${GetFileUrl(file.thumbnailId)}` : '',
       mediaType: file.fileType,
       meta: {
         color: file.gltf?.color,

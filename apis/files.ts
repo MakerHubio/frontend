@@ -2,8 +2,6 @@ import axios, { AxiosResponse } from 'axios';
 import getCookie from '../utils/cookie';
 import { IdResponse } from '../models/Api';
 
-const base = 'http://127.0.0.1:5001/files';
-
 async function UploadFile(name: string, file: Blob,
                           onUploadProgress?:
                             (progressEvent: any) => void): Promise<AxiosResponse<IdResponse>> {
@@ -14,7 +12,7 @@ async function UploadFile(name: string, file: Blob,
   formData.append('file', file.slice(0, file.size, file.type));
 
   return axios({
-    url: `${base}/`,
+    url: `${process.env.NEXT_PUBLIC_FILES_PATH}/`,
     method: 'post',
     headers: {
       Authorization: getCookie('mh_authorization'),
@@ -24,6 +22,11 @@ async function UploadFile(name: string, file: Blob,
   });
 }
 
+function GetFileUrl(id: string): string {
+  return `${process.env.NEXT_PUBLIC_FILES_PATH}/${id}`;
+}
+
 export {
   UploadFile,
+  GetFileUrl,
 };

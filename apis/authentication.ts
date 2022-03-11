@@ -1,10 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 import { RegisterRequest } from '../models/authentication';
 
-const base = 'http://data.makerhub.io/authentication';
-
 async function RegisterUser(register: RegisterRequest): Promise<AxiosResponse<string>> {
-    return axios(`${base}/register`, {
+    return axios(`${process.env.NEXT_PUBLIC_AUTHENTICATION_PATH}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
@@ -13,7 +11,7 @@ async function RegisterUser(register: RegisterRequest): Promise<AxiosResponse<st
 }
 
 async function LoginUser(username: string, password: string) {
-    const f = await fetch(`${base}/login`, {
+    const f = await fetch(`${process.env.NEXT_PUBLIC_AUTHENTICATION_PATH}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -26,7 +24,7 @@ async function LoginUser(username: string, password: string) {
 }
 
 async function LogoutUser() {
-    const f = await fetch(`${base}/logout`, {
+    const f = await fetch(`${process.env.NEXT_PUBLIC_AUTHENTICATION_PATH}/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

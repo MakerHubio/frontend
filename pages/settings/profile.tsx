@@ -26,7 +26,7 @@ import SettingsMenu from '../../components/Settings/Menu';
 import { CountryListAllIsoData } from '../../const';
 import { globalContext } from '../../store';
 import { GenerateAvatarUrl, GetUserProfile, UpdateUserProfile } from '../../apis/users';
-import { UploadFile } from '../../apis/files';
+import { GetFileUrl, UploadFile } from '../../apis/files';
 import { UserProfile } from '../../models/User';
 import path from 'path';
 
@@ -108,13 +108,13 @@ export default function ProfileSettings() {
       } else {
         setAvatar({
           name: '',
-          url: `http://localhost:5001/files/${result.data.avatarId}`,
+          url: GetFileUrl(result.data.avatarId),
         });
       }
       if (result.data.bannerId !== '') {
         setBanner({
           name: '',
-          url: `http://localhost:5001/files/${result.data.bannerId}`,
+          url: GetFileUrl(result.data.bannerId),
         });
       }
       formik.setValues(result.data);

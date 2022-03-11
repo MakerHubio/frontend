@@ -36,6 +36,7 @@ import moment from 'moment';
 import UserAvatar from '../../../components/UserAvatar';
 import { GetProjectsResponse } from '../../../models/Project';
 import { GetProjects } from '../../../apis/projects';
+import { GetFileUrl } from '../../../apis/files';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const token = context.req.cookies.mh_authorization;
@@ -125,7 +126,7 @@ export default function UserProfile(props: UserProfileProps) {
       >
         {
           props.profile.bannerId ?
-            <Image height={300} width={1290} src={`http://localhost:5001/files/${props.profile.bannerId}`} /> :
+            <Image height={300} width={1290} src={GetFileUrl(props.profile.bannerId)} /> :
             <Box sx={() => ({
               position: 'relative',
             })}>
