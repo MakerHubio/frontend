@@ -27,7 +27,7 @@ const ProjectCardSkeleton = (theme: MantineTheme) =>
   <Card
     withBorder
     shadow="sm"
-    padding="lg"
+    p="lg"
     radius="md"
   >
     <Card.Section>
@@ -69,7 +69,7 @@ export default function ProjectCard({
     <Card
       withBorder
       shadow="sm"
-      padding="lg"
+      p="lg"
       radius="md"
       key={project.id}
       onClick={() => {
@@ -118,8 +118,6 @@ export default function ProjectCard({
           position="bottom"
           placement="center"
           withArrow
-          noFocusTrap
-          noEscape
           transition="rotate-right"
           styles={{ body: { width: 260 } }}
           target={
