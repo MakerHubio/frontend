@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import Project from '../../models/Project';
 import UserAvatar from '../UserAvatar';
 import { useElementSize } from '@mantine/hooks';
+import { GetFileUrl } from '../../apis/files';
 
 type ProjectCardPropType = {
   project?: Project;
@@ -60,11 +61,11 @@ export default function ProjectCard({
   if (skeleton) {
     return ProjectCardSkeleton(theme);
   }
-  
+
   if (!project || !onLike) {
     throw new Error('project and onLike needs to be defined if skeleton is false');
   }
-  
+
   return (
     <Card
       withBorder
@@ -81,7 +82,7 @@ export default function ProjectCard({
     >
       <Card.Section>
         <Image
-          src={`http://127.0.0.1:5001/files/${project.thumbnailId}?w=${width}&h=${Math.round(height)}`}
+          src={`${GetFileUrl(project.thumbnailId!)}?w=${width}&h=${Math.round(height)}`}
           imageProps={{
             loading: 'lazy',
           }}

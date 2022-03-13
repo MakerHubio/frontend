@@ -21,6 +21,7 @@ import SettingsMenu from '../../components/Settings/Menu';
 import Project, { GetProjectsResponse } from '../../models/Project';
 import { GetProjects, RemoveProject } from '../../apis/projects';
 import { globalContext } from '../../store';
+import { GetFileUrl } from '../../apis/files';
 
 const useStyles = createStyles(theme => ({
   item: {
@@ -65,7 +66,7 @@ export default function ProjectsSettings() {
     <Group>
       <Image
         radius="sm"
-        src={`http://127.0.0.1:5001/files/${project.thumbnailId}?w=400&h=200`}
+        src={`${GetFileUrl(project.thumbnailId!)}?w=400&h=200`}
         width={100}
         height={50}
       />
