@@ -51,13 +51,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const { id } = context.params;
-
-  const resp: AxiosResponse<ProjectModel> | undefined = await GetProject((id as string), token);
+  let resp: AxiosResponse<ProjectModel> | undefined;
+  try {
+    resp = await GetProject((id as string), token);
+  } catch (e) {
+    console.log(e);
+    return {
+      redirect: {
+        destination: '/500',
+        permanent: false,
+      },
+    };
+  }
 
   if (resp === undefined || resp.status === 404) {
     return {
       redirect: {
         destination: '/404',
+        permanent: false,
+      },
+    };
+  } else if (resp.status !== 200) {
+    return {
+      redirect: {
+        destination: '/502',
         permanent: false,
       },
     };

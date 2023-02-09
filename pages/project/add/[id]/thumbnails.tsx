@@ -35,6 +35,7 @@ import { GetFileUrl } from '../../../../apis/files';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const queryClient = new QueryClient();
+  const token = context.req.cookies.mh_authorization;
   let resp: AxiosResponse<ProjectModel> | undefined;
 
   if (context.params !== undefined && context.params.id !== undefined) {
@@ -44,7 +45,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     resp = await queryClient.getQueryData('project');
 
-    if (!context.req.cookies.mh_authorization) {
+    console.log(resp);
+
+    if (token === '') {
+      console.log('no permission1');
       return {
         redirect: {
           destination: '/',
@@ -52,8 +56,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
       };
     } else {
-      const jwtUser: JWTUser = jwt_decode(context.req.cookies.mh_authorization);
+      const jwtUser: JWTUser = jwt_decode(token);
+      console.log(jwtUser);
+      console.log(resp?.data);
       if (jwtUser.userId !== resp?.data.creator?.id) {
+        console.log('no permission2');
         return {
           redirect: {
             destination: '/',
@@ -81,6 +88,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   if (!resp.data.files || resp.data.files.length === 0) {
+    console.log('no files');
     return {
       redirect: {
         destination: `/project/${resp.data.id}`,

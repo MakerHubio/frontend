@@ -51,6 +51,7 @@ function gatherFiles(createProjectRequest: CreateProjectRequest,
         order: i,
         isProjectThumbnail: i === 0,
       },
+      contentType: file.type,
     });
     id += 1;
   }

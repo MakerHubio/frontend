@@ -100,24 +100,24 @@ export default function ProfileSettings() {
     return GetUserProfile(globalState.loggedUser?.userId);
   }, {
     onSuccess: result => {
-      if (result.data.avatarId === '') {
+      if (result.data.data.avatarId === '') {
         setAvatar({
           name: '',
-          url: GenerateAvatarUrl(result.data.id || ''),
+          url: GenerateAvatarUrl(result.data.data.id || ''),
         });
       } else {
         setAvatar({
           name: '',
-          url: GetFileUrl(result.data.avatarId),
+          url: GetFileUrl(result.data.data.avatarId),
         });
       }
-      if (result.data.bannerId !== '') {
+      if (result.data.data.bannerId !== '') {
         setBanner({
           name: '',
-          url: GetFileUrl(result.data.bannerId),
+          url: GetFileUrl(result.data.data.bannerId),
         });
       }
-      formik.setValues(result.data);
+      formik.setValues(result.data.data);
     },
     refetchOnWindowFocus: false,
     enabled: globalState.loggedUser !== null,

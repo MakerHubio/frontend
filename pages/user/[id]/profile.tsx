@@ -37,6 +37,7 @@ import UserAvatar from '../../../components/UserAvatar';
 import { GetProjectsResponse } from '../../../models/Project';
 import { GetProjects } from '../../../apis/projects';
 import { GetFileUrl } from '../../../apis/files';
+import { ApiResponse } from '../../../models/Api';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const token = context.req.cookies.mh_authorization;
@@ -51,8 +52,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   const id = context.params.id as string;
 
-  const resp: AxiosResponse<Profile> | undefined = await GetUserProfile(id as string, token);
-
+  const resp: AxiosResponse<ApiResponse<Profile>> | undefined =
+    await GetUserProfile(id as string, token);
 
   if (resp === undefined || resp.status === 404) {
     return {
@@ -65,7 +66,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      profile: resp.data,
+      profile: resp.data.data,
     },
   };
 };
@@ -126,11 +127,11 @@ export default function UserProfile(props: UserProfileProps) {
       >
         {
           props.profile.bannerId ?
-            <Image height={300} width={1290} src={GetFileUrl(props.profile.bannerId)} /> :
+            <Image height={300} width={1290} src={GetFileUrl(props.profile.bannerId)}/> :
             <Box sx={() => ({
               position: 'relative',
             })}>
-              <Image height={300} width={1290} src={'/bg.jpg'} />
+              <Image height={300} width={1290} src={'/bg.jpg'}/>
             </Box>
         }
       </Paper>
@@ -181,11 +182,11 @@ export default function UserProfile(props: UserProfileProps) {
             <Text weight="bold">About</Text>
             <Space h="sm"/>
             <Text>{props.profile.bio}</Text>
-            <Space h="sm" />
-            { props.profile.website !== '' ?
+            <Space h="sm"/>
+            {props.profile.website !== '' ?
               <Group>
-                <IoGlobe />
-                <Anchor target="_blank" href={props.profile.website}>{ props.profile.website }</Anchor>
+                <IoGlobe/>
+                <Anchor target="_blank" href={props.profile.website}>{props.profile.website}</Anchor>
               </Group> : null}
           </Card>
         </Col>
@@ -239,7 +240,7 @@ export default function UserProfile(props: UserProfileProps) {
                 <ProjectCard skeleton/>
               </> :
               data?.projects.map(project =>
-                <ProjectCard key={project.id} project={project} onLike={() => false} />
+                <ProjectCard key={project.id} project={project} onLike={() => false}/>
               )
             }
           </SimpleGrid>

@@ -46,6 +46,7 @@ export interface CreateProjectRequestFile {
     fieldName: string,
     thumbnailFieldName?: string,
     meta: AddProjectFileRequest,
+    contentType: string
 }
 
 export interface CreateProjectRequest {
