@@ -9,13 +9,13 @@ import {
 import { useMutation, useQuery } from 'react-query';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { AxiosResponse } from 'axios';
+import { IoChevronDown, IoSearch } from 'react-icons/io5';
+import { useHotkeys } from '@mantine/hooks';
 import { GetProjects, SetLikeProject } from '../apis/projects';
 import { globalContext } from '../store';
 import ProjectCard from '../components/ProjectCard/ProjectCard';
 import Shell from '../components/Shell/Shell';
 import { GetProjectsResponse } from '../models/Project';
-import { IoChevronDown, IoSearch } from 'react-icons/io5';
-import { useHotkeys } from '@mantine/hooks';
 
 export default function Home() {
   const { globalState } = useContext(globalContext);
@@ -61,7 +61,7 @@ export default function Home() {
     <Shell noPadding background={theme.colors.dark[4]} colorScheme="dark">
       <Head>
         <title>MakerHub - Home</title>
-        <meta name="description" content="MakerHub - Home"/>
+        <meta name="description" content="MakerHub - Home" />
         <link
           rel="icon"
           href="https://mantine.dev/favicon.svg?v=c7bf473b30e5d81722ea0acf3a11a107"
@@ -69,15 +69,19 @@ export default function Home() {
         />
       </Head>
       <MantineProvider theme={{ colorScheme: 'dark' }}>
-        <Paper sx={t => ({
+        <Paper
+          sx={t => ({
           backgroundColor: t.colors.dark[4],
-        })} radius={0} p="xl">
+        })}
+          radius={0}
+          p="xl"
+        >
           <Container>
             <Title>What will be you next <span>3D print</span>?</Title>
             <Text>Explore the newest projects or share your own creations.</Text>
             <Space h="md" />
             <Autocomplete
-              icon={<IoSearch/>}
+              icon={<IoSearch />}
               placeholder="Search projects..."
               rightSectionWidth={72}
               ref={searchRef}
@@ -85,7 +89,8 @@ export default function Home() {
                 <Box sx={() => ({
                   display: 'flex',
                   alignContent: 'center',
-                })}>
+                })}
+                >
                   <Kbd mr={2}>Ctrl</Kbd>
                   <Kbd>K</Kbd>
                 </Box>}
@@ -109,14 +114,16 @@ export default function Home() {
           <Group spacing="xs">
             <Menu control={
               <Button leftIcon={<IoChevronDown />} color="gray" variant="outline" radius="xl">Today</Button>
-            }>
+            }
+            >
               <Menu.Item>Today</Menu.Item>
               <Menu.Item>This week</Menu.Item>
               <Menu.Item>This month</Menu.Item>
             </Menu>
             <Menu control={
               <Button leftIcon={<IoChevronDown />} radius="xl">Trending</Button>
-            }>
+            }
+            >
               <Menu.Item>Trending</Menu.Item>
               <Menu.Item>Popular</Menu.Item>
               <Menu.Item>Newest</Menu.Item>

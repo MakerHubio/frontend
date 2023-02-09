@@ -209,7 +209,7 @@ export default function Project(props: ProjectProps) {
               <IoAdd size={10}/>
             </Group>
             <Space h="sm"/>
-            <Button component="a" href={`${process.env.NEXT_PUBLIC_FILES_PATHx}/${props.project.id}/download`} fullWidth
+            <Button component="a" href={`${process.env.NEXT_PUBLIC_FILES_PATH}/${props.project.id}/download`} fullWidth
                     leftIcon={<IoDownload/>}>Download all files</Button>
             <Space h="sm"/>
             <SimpleGrid cols={3}>
