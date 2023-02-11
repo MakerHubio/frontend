@@ -1,4 +1,4 @@
-import { Button, createStyles, Divider, Group, Paper, ThemeIcon } from '@mantine/core';
+import {Button, createStyles, Divider, Flex, Group, Paper, Stack, ThemeIcon} from '@mantine/core';
 import { IoBan, IoCube, IoLockClosed, IoNotifications, IoPerson, IoShield, IoSunny } from 'react-icons/io5';
 import { useRouter } from 'next/router';
 
@@ -17,7 +17,7 @@ export default function SettingsMenu({ active }: SettingsMenuProps) {
     const { classes } = useStyles();
 
     return <Paper radius="md" withBorder shadow="md" p="sm">
-        <Group direction="column" spacing={2} grow>
+        <Stack spacing={2}>
             <Button
               className={classes.menuButton}
               variant="outline"
@@ -148,6 +148,6 @@ export default function SettingsMenu({ active }: SettingsMenuProps) {
             >
                 Blocked Users
             </Button>
-        </Group>
+        </Stack>
            </Paper>;
 }

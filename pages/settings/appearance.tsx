@@ -13,12 +13,12 @@ import {
     Card,
     Image, UnstyledButton, ColorScheme, useMantineColorScheme, Divider,
 } from '@mantine/core';
-import { useLocalStorageValue } from '@mantine/hooks';
+import { useLocalStorage } from '@mantine/hooks';
 import Shell from '../../components/Shell/Shell';
 import SettingsMenu from '../../components/Settings/Menu';
 
 export default function AppearanceSettings() {
-    const [, setLSColorScheme] = useLocalStorageValue<ColorScheme>({ key: 'color-scheme', defaultValue: 'dark' });
+    const [, setLSColorScheme] = useLocalStorage<ColorScheme>({ key: 'color-scheme', defaultValue: 'dark' });
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();
     const setColorScheme = (value? : ColorScheme) => {
         if (value === undefined) return;

@@ -8,7 +8,6 @@ import {
   Space,
   Group,
   Tabs,
-  Tab,
   Box,
   Badge, SimpleGrid, useMantineTheme, Paper, Image, Center, Anchor, MediaQuery,
 } from '@mantine/core';
@@ -101,7 +100,7 @@ export default function Project(props: ProjectProps) {
       isLoading: false,
     });
 
-  const [tabIndex, setTabIndex] = useState(TABS.indexOf(router.asPath.split('#')[1] || TABS[0]));
+  const [currentTab, setCurrentTab] = useState<string | null>(router.asPath.split('#')[1] || TABS[0]);
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
 
   useEffect(() => {
@@ -122,14 +121,13 @@ export default function Project(props: ProjectProps) {
   }, []);
 
   useEffect(() => {
-    router.replace(router.route, {
-      hash: TABS[tabIndex],
-    });
-  }, [tabIndex]);
+    console.log(router);
+    router.replace(`${router.asPath}?currentTab=${currentTab}`);
+  }, []);
 
   const getTabContent = () => {
-    switch (tabIndex) {
-      case 0:
+    switch (currentTab) {
+      case TABS[0]:
         return <Card radius="md" shadow="md" withBorder p="sm">
           <Text mx="sm"
                 color={props.project.description === '' ? 'gray' : theme.colorScheme === 'light' ? theme.black : theme.white}>
@@ -137,11 +135,11 @@ export default function Project(props: ProjectProps) {
               <div dangerouslySetInnerHTML={{ __html: props.project.description as string }}/>}
           </Text>
         </Card>;
-      case 1:
+      case TABS[1]:
         return <FilesSection projectId={props.project.id!} files={props.project.files!}/>;
-      case 2:
+      case TABS[2]:
         return <CommentSection projectId={props.project.id!} />;
-      case 3:
+      case TABS[3]:
         return <Paper p="md" shadow="md" withBorder radius="md">
           <Center mb="md">
             <Image src="/empty.svg" height={256} width="auto"/>
@@ -155,9 +153,11 @@ export default function Project(props: ProjectProps) {
     }
   };
 
+  const title = `MakerHub - ${props.project.name}`;
+
   return <Shell>
     <Head>
-      <title>MakerHub - {props.project.name}</title>
+      <title>{title}</title>
       <meta name="description" content={`MakerHub - ${props.project.name}`}/>
 
       <link
@@ -303,11 +303,13 @@ export default function Project(props: ProjectProps) {
       <Space h="lg"/>
       <div style={{ position: 'relative' }}>
         <Card radius="md" shadow="md" withBorder p="sm">
-          <Tabs color="blue" variant="pills" active={tabIndex} onTabChange={setTabIndex}>
-            <Tab label="Description" icon={<IoInformationCircle/>}/>
-            <Tab label="Files" icon={<IoDocument/>}/>
-            <Tab label="Comments" icon={<IoChatbox/>}/>
-            <Tab label="Remixes" icon={<IoShuffle/>}/>
+          <Tabs color="blue" variant="pills" value={currentTab} onTabChange={setCurrentTab}>
+            <Tabs.List>
+              <Tabs.Tab value={TABS[0]} icon={<IoInformationCircle/>}>Description</Tabs.Tab>
+              <Tabs.Tab value={TABS[1]} icon={<IoDocument/>}>Files</Tabs.Tab>
+              <Tabs.Tab value={TABS[2]} icon={<IoChatbox/>}>Comments</Tabs.Tab>
+              <Tabs.Tab value={TABS[3]} icon={<IoShuffle/>}>Remixes</Tabs.Tab>
+            </Tabs.List>
           </Tabs>
         </Card>
         <Space h="md"/>

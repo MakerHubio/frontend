@@ -112,21 +112,25 @@ export default function Home() {
         <Group position="apart" align="center" mb="md">
           <Title>Trending projects</Title>
           <Group spacing="xs">
-            <Menu control={
-              <Button leftIcon={<IoChevronDown />} color="gray" variant="outline" radius="xl">Today</Button>
-            }
-            >
-              <Menu.Item>Today</Menu.Item>
-              <Menu.Item>This week</Menu.Item>
-              <Menu.Item>This month</Menu.Item>
+            <Menu>
+              <Menu.Target>
+                <Button leftIcon={<IoChevronDown />} color="gray" variant="outline" radius="xl">Today</Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item>Today</Menu.Item>
+                <Menu.Item>This week</Menu.Item>
+                <Menu.Item>This month</Menu.Item>
+              </Menu.Dropdown>
             </Menu>
-            <Menu control={
-              <Button leftIcon={<IoChevronDown />} radius="xl">Trending</Button>
-            }
-            >
-              <Menu.Item>Trending</Menu.Item>
-              <Menu.Item>Popular</Menu.Item>
-              <Menu.Item>Newest</Menu.Item>
+            <Menu>
+              <Menu.Target>
+                <Button leftIcon={<IoChevronDown />} radius="xl">Trending</Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item>Trending</Menu.Item>
+                <Menu.Item>Popular</Menu.Item>
+                <Menu.Item>Newest</Menu.Item>
+              </Menu.Dropdown>
             </Menu>
           </Group>
 

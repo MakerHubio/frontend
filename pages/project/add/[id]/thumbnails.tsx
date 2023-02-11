@@ -45,10 +45,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     resp = await queryClient.getQueryData('project');
 
-    console.log(resp);
-
     if (token === '') {
-      console.log('no permission1');
       return {
         redirect: {
           destination: '/',
@@ -60,7 +57,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       console.log(jwtUser);
       console.log(resp?.data);
       if (jwtUser.userId !== resp?.data.creator?.id) {
-        console.log('no permission2');
         return {
           redirect: {
             destination: '/',

@@ -12,10 +12,9 @@ import {
   Button,
   Text,
   TextInput,
-  Textarea, Select, LoadingOverlay, Box,
+  Textarea, Select, LoadingOverlay, Box, SelectItem,
 } from '@mantine/core';
 import { IoGlobe, IoInformationCircle, IoLocation, IoPerson, IoSave } from 'react-icons/io5';
-import { SelectItem } from '@mantine/core/lib/components/Select/types';
 import { useContext, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useFormik } from 'formik';
@@ -57,7 +56,8 @@ async function SaveProfile(profile: UserProfile,
         return result;
       }
       return Promise.reject(result);
-    }).catch(reason => Promise.reject(reason));
+    })
+    .catch(reason => Promise.reject(reason));
 }
 
 type ImageData = { name: string, url: string } | null;
@@ -88,7 +88,8 @@ export default function ProfileSettings() {
 
       result.then(() => {
         setSubmitting(false);
-      }).catch(() => setSubmitting(false));
+      })
+        .catch(() => setSubmitting(false));
     },
   });
 
@@ -132,7 +133,7 @@ export default function ProfileSettings() {
   return <Shell>
     <Head>
       <title>MakerHub - Profile settings</title>
-      <meta name="description" content="MakerHub - Profile settings" />
+      <meta name="description" content="MakerHub - Profile settings"/>
       <link
         rel="icon"
         href="https://mantine.dev/favicon.svg?v=c7bf473b30e5d81722ea0acf3a11a107"
@@ -142,20 +143,20 @@ export default function ProfileSettings() {
 
     <Container size="xl">
       <Title>Settings</Title>
-      <Space h="md" />
+      <Space h="md"/>
       <Grid>
         <Col span={3}>
-          <SettingsMenu active={0} />
+          <SettingsMenu active={0}/>
         </Col>
         <Col span={9}>
           <Box sx={() => ({
             position: 'relative',
           })}
           >
-            <LoadingOverlay visible={isLoading} />
+            <LoadingOverlay visible={isLoading}/>
             <Paper radius="md" withBorder shadow="md" p="sm">
               <Title order={3}>Avatar</Title>
-              <Divider mb="sm" />
+              <Divider mb="sm"/>
               <Group align="start">
                 <Dropzone
                   onDrop={(files: File[]) => {
@@ -172,25 +173,23 @@ export default function ProfileSettings() {
                   p={0}
                   radius="lg"
                   sx={() => ({
-                  border: 'none',
-                })}
+                    border: 'none',
+                  })}
                 >
-                  {() =>
-                    <Image withPlaceholder src={avatar?.url} height={200} width={200} radius={16} />
-                  }
+                  <Image withPlaceholder src={avatar?.url} height={200} width={200} radius={16}/>
                 </Dropzone>
                 <div>
                   <Group>
                     <Button onClick={() => openRef.current!()}>Upload a photo</Button>
                   </Group>
-                  <Space h="lg" />
+                  <Space h="lg"/>
                   <Text color="dimmed">You can use drag an drop to change your avatar.</Text>
                   <Text color="dimmed">Preferred resolution is 256x256.</Text>
                 </div>
               </Group>
-              <Space h="lg" />
+              <Space h="lg"/>
               <Title order={3}>Banner</Title>
-              <Divider mb="sm" />
+              <Divider mb="sm"/>
               <Group align="start">
                 <Dropzone
                   onDrop={(files: File[]) => {
@@ -212,7 +211,6 @@ export default function ProfileSettings() {
                     width: '60%',
                   })}
                 >
-                  {() =>
                     <Image
                       withPlaceholder
                       src={banner?.url}
@@ -220,21 +218,20 @@ export default function ProfileSettings() {
                         image: {
                           aspectRatio: '34/10',
                         },
-                    })} radius={16} />
-                  }
+                      })} radius={16}/>
                 </Dropzone>
                 <div>
                   <Group>
                     <Button onClick={() => openRef.current!()}>Upload a photo</Button>
                   </Group>
-                  <Space h="lg" />
+                  <Space h="lg"/>
                   <Text color="dimmed">You can use drag an drop to change your banner.</Text>
                   <Text color="dimmed">Preferred resolution is 1290x300.</Text>
                 </div>
               </Group>
-              <Space h="lg" />
+              <Space h="lg"/>
               <Title order={3}>Personal information</Title>
-              <Divider mb="sm" />
+              <Divider mb="sm"/>
               <form onSubmit={formik.handleSubmit}>
                 <TextInput
                   label="Username"
@@ -244,9 +241,9 @@ export default function ProfileSettings() {
                   onBlur={formik.handleBlur}
                   value={formik.values.username}
                   error={formik.errors.username}
-                  icon={<IoPerson />}
+                  icon={<IoPerson/>}
                 />
-                <Space h="md" />
+                <Space h="md"/>
                 <Textarea
                   label="Bio"
                   autosize
@@ -257,18 +254,18 @@ export default function ProfileSettings() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.bio}
-                  icon={<IoInformationCircle />}
+                  icon={<IoInformationCircle/>}
                 />
-                <Space h="md" />
+                <Space h="md"/>
                 <TextInput
                   label="Website"
-                  icon={<IoGlobe />}
+                  icon={<IoGlobe/>}
                   id="website"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.website}
                 />
-                <Space h="md" />
+                <Space h="md"/>
                 <Select
                   label="Location"
                   id="locationCode"
@@ -278,16 +275,16 @@ export default function ProfileSettings() {
                   }}
                   onBlur={formik.handleBlur}
                   value={formik.values.locationCode}
-                  icon={<IoLocation />}
+                  icon={<IoLocation/>}
                   data={getSelectData()}
                 />
-                <Space h="md" />
+                <Space h="md"/>
                 <Group position="right">
                   <Button
                     disabled={!formik.touched || formik.isSubmitting}
                     loading={formik.isSubmitting}
                     type="submit"
-                    leftIcon={<IoSave />}
+                    leftIcon={<IoSave/>}
                   >Save
                   </Button>
                 </Group>
@@ -297,5 +294,5 @@ export default function ProfileSettings() {
         </Col>
       </Grid>
     </Container>
-         </Shell>;
+  </Shell>;
 }

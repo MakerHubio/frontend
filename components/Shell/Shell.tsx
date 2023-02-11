@@ -61,6 +61,7 @@ export default function Shell(props: PropsWithChildren<ShellProps>) {
   const [avatar, setAvatar] = useState('');
   const { toggleColorScheme } = useMantineColorScheme();
   const theme = useMantineTheme();
+  const [refLink, setRefLink] = useState('');
 
   const logout = useMutation(() => LogoutUser(), {
     onSuccess: () => {
@@ -94,6 +95,8 @@ export default function Shell(props: PropsWithChildren<ShellProps>) {
     } else {
       setAvatar(`${GetFileUrl(cookie_data.avatarId)}?w=64&h=64`);
     }
+
+    setRefLink(window.location.toString());
   }, []);
 
   return (
@@ -119,7 +122,7 @@ export default function Shell(props: PropsWithChildren<ShellProps>) {
           })}
           >
             <Group>
-              <Link href="/" passHref>
+              <Link href="/" passHref legacyBehavior>
                 <UnstyledButton>
                   <Group spacing={0}>
                     <ThemeIcon variant="filled">
@@ -167,68 +170,65 @@ export default function Shell(props: PropsWithChildren<ShellProps>) {
                 <Popover
                   opened={notificationsOpened}
                   onClose={() => setNotificationsOpened(false)}
-                  target={
-                    <ActionIcon onClick={() => setNotificationsOpened(true)}>
-                      <IoNotifications size={20}/>
-                    </ActionIcon>
-                  }
-                  styles={{ body: { width: 350 } }}
+                  styles={{ dropdown: { width: 350 } }}
                   position="bottom"
-                  placement="end"
-                  spacing={0}
                   shadow="sm"
                   withArrow
                 >
-                  <Group position="apart" m="xs">
-                    <Text sx={t => ({
-                      color: t.colorScheme === 'light' ? 'black' : 'white',
-                    })} weight="bold" size="sm">Notifications</Text>
-                    <ActionIcon size="sm"><IoTrash size={15}/></ActionIcon>
-                  </Group>
-                  <Group my="lg" position="center">
-                    <Text color="dimmed">No further notifications</Text>
-                  </Group>
+                  <Popover.Target>
+                    <ActionIcon onClick={() => setNotificationsOpened(true)}>
+                      <IoNotifications size={20}/>
+                    </ActionIcon>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Group position="apart" m="xs">
+                      <Text sx={t => ({
+                        color: t.colorScheme === 'light' ? 'black' : 'white',
+                      })} weight="bold" size="sm">Notifications</Text>
+                      <ActionIcon size="sm"><IoTrash size={15}/></ActionIcon>
+                    </Group>
+                    <Group my="lg" position="center">
+                      <Text color="dimmed">No further notifications</Text>
+                    </Group>
+                  </Popover.Dropdown>
                 </Popover>
-                <Menu
-                  sx={() => ({
-                    display: 'flex',
-                  })}
-                  control={
+                <Menu>
+                  <Menu.Target>
                     <ActionIcon><IoAdd size={20}/></ActionIcon>
-                  }
-                >
-                  <Menu.Item
-                    onClick={() => router.push('/project/add')}
-                  >
-                    Add project
-                  </Menu.Item>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Item
+                      onClick={() => router.push('/project/add')}
+                    >
+                      Add project
+                    </Menu.Item>
+                  </Menu.Dropdown>
                 </Menu>
-              <Menu
-                  sx={t => ({
+              <Menu>
+                <Menu.Target>
+                  <UnstyledButton sx={t => ({
                     display: 'flex',
                     '&:hover': {
                       backgroundColor: t.colorScheme === 'light' ? t.colors.gray[1] : t.colors.dark[6],
                     },
                     borderRadius: t.radius.sm,
                     padding: 2,
-                  })}
-                  control={
-                      <UnstyledButton>
-                        <Group className={classes.user}>
-                          <Avatar
-                            src={avatar}
-                          />
-                          <MediaQuery
-                            smallerThan="md"
-                            styles={{ display: 'none' }}
-                          >
-                            <Text>{globalState.loggedUser.username}</Text>
-                          </MediaQuery>
-                          <IoChevronDown/>
-                        </Group>
-                      </UnstyledButton>
-                  }
-                >
+                  })}>
+                    <Group className={classes.user}>
+                      <Avatar
+                        src={avatar}
+                      />
+                      <MediaQuery
+                        smallerThan="md"
+                        styles={{ display: 'none' }}
+                      >
+                        <Text>{globalState.loggedUser.username}</Text>
+                      </MediaQuery>
+                      <IoChevronDown/>
+                    </Group>
+                  </UnstyledButton>
+                </Menu.Target>
+                <Menu.Dropdown>
                   <Menu.Item
                     onClick={() => router.push(`/user/${globalState.loggedUser!.userId}/profile`)}
                     icon={<IoPerson/>}
@@ -241,10 +241,11 @@ export default function Shell(props: PropsWithChildren<ShellProps>) {
                   <Menu.Item onClick={() => logout.mutate()} icon={<IoLogOut/>}>
                     Logout
                   </Menu.Item>
+                </Menu.Dropdown>
                 </Menu>
               </Group>
             ) : (
-              <Link href={`/login?ref=${typeof window !== 'undefined' ? window.location : ''}`} passHref>
+              <Link href={`/login?ref=${refLink}`} passHref legacyBehavior>
                 <Button variant="light" component="a">
                   Login
                 </Button>

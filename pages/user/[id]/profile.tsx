@@ -6,7 +6,6 @@ import {
   Space,
   Group,
   Text,
-  Tab,
   Tabs,
   SimpleGrid,
   Button,
@@ -85,10 +84,12 @@ export default function UserProfile(props: UserProfileProps) {
     return (await GetProjects({ CreatorId: props.profile.id })).data;
   }, {});
 
+  const title = `MakerHub - ${props.profile.username} profile`;
+
   return (<Shell>
 
     <Head>
-      <title>MakerHub - {props.profile.username} profile</title>
+      <title>{title}</title>
       <meta name="description" content={`Makerhub - ${props.profile.username} profile`}/>
       <link
         rel="icon"
@@ -143,7 +144,6 @@ export default function UserProfile(props: UserProfileProps) {
           md={4}
           sm={12}
           xs={12}
-          grow
         >
           <Card
             radius="md"
@@ -196,19 +196,22 @@ export default function UserProfile(props: UserProfileProps) {
           md={8}
           sm={12}
           xs={12}
-          grow
         >
           <Card radius="md" shadow="md" withBorder p="sm">
             <Group position="apart">
               <Tabs variant="pills">
-                <Tab label="Projects" icon={<IoBuild/>}/>
-                <Tab label="Likes" icon={<IoHeart/>}/>
-                <Tab label="Follower" icon={<IoPeople/>}/>
-                <Tab label="Following" icon={<IoHeartCircleOutline/>}/>
+                <Tabs.List>
+                  <Tabs.Tab value="projects" icon={<IoBuild/>}>Projects</Tabs.Tab>
+                  <Tabs.Tab value="likes" icon={<IoHeart/>}>Likes</Tabs.Tab>
+                  <Tabs.Tab value="follower" icon={<IoPeople/>}>Follower</Tabs.Tab>
+                  <Tabs.Tab value="following" icon={<IoHeartCircleOutline/>}>Following</Tabs.Tab>
+                </Tabs.List>
               </Tabs>
               <Menu>
-                <Menu.Label>More</Menu.Label>
-                <Menu.Item icon={<IoFolder/>}>Collections</Menu.Item>
+                <Menu.Dropdown>
+                  <Menu.Label>More</Menu.Label>
+                  <Menu.Item icon={<IoFolder/>}>Collections</Menu.Item>
+                </Menu.Dropdown>
               </Menu>
             </Group>
           </Card>

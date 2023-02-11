@@ -1,10 +1,8 @@
 module.exports = {
+  swcMinify: true,
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
-  },
-  experimental: {
-    outputStandalone: true,
   },
   async redirects() {
     return [

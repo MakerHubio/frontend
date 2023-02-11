@@ -6,7 +6,7 @@ import {
     Col,
     Space,
     Anchor,
-    Paper, Divider, TextInput, Group, Button, Text, ThemeIcon,
+    Paper, Divider, TextInput, Group, Button, Text, ThemeIcon, Stack,
 } from '@mantine/core';
 import { IoLockClosed } from 'react-icons/io5';
 import Shell from '../../components/Shell/Shell';
@@ -50,13 +50,13 @@ export default function SecuritySettings() {
                         <Space h="md" />
                         <Title order={3}>Two-factor authentication</Title>
                         <Divider mb="sm" />
-                        <Group my="lg" position="center" direction="column" spacing={1}>
+                        <Stack my="lg" align="center" spacing={1}>
                             <ThemeIcon my="lg" variant="light"><IoLockClosed size={20} /></ThemeIcon>
                             <Text size="xl" weight="bold">Two factor authentication is not enabled yet.</Text>
                             <Text color="dimmed">Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to sign in.</Text>
                             <Space h="md" />
                             <Button>Enable two-factor authentication</Button>
-                        </Group>
+                        </Stack>
                     </Paper>
                 </Col>
             </Grid>

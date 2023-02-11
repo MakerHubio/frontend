@@ -117,11 +117,11 @@ export default function ProjectCard({
           opened={popoverOpened}
           onClose={() => setPopoverOpened(false)}
           position="bottom"
-          placement="center"
           withArrow
           transition="rotate-right"
-          styles={{ body: { width: 260 } }}
-          target={
+          styles={{ dropdown: { width: 260 } }}
+        >
+          <Popover.Target>
             <Button
               onClick={(e: SyntheticEvent) => {
                 e.stopPropagation();
@@ -147,21 +147,22 @@ export default function ProjectCard({
                 {project.likeCount || 0}
               </Text>
             </Button>
-          }
-        >
-          <Text>You must be logged in to like a project</Text>
-          <Space h="sm" />
-          <Button
-            onClick={(e: SyntheticEvent) => {
-              e.stopPropagation();
-              router.push(`/login?ref=${typeof window !== 'undefined' ? window.location : ''}`);
-            }}
-            fullWidth
-            leftIcon={<IoLogIn />}
-            component="a"
-          >
-            Login
-          </Button>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <Text>You must be logged in to like a project</Text>
+            <Space h="sm" />
+            <Button
+              onClick={(e: SyntheticEvent) => {
+                e.stopPropagation();
+                router.push(`/login?ref=${typeof window !== 'undefined' ? window.location : ''}`);
+              }}
+              fullWidth
+              leftIcon={<IoLogIn />}
+              component="a"
+            >
+              Login
+            </Button>
+          </Popover.Dropdown>
         </Popover>
       </Group>
     </Card>

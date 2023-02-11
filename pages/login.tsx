@@ -13,7 +13,7 @@ import {
     Divider, Alert,
 } from '@mantine/core';
 import { IoAlertCircle, IoLogoApple, IoLogoGithub, IoLogoGoogle } from 'react-icons/io5';
-import { useForm } from '@mantine/hooks';
+import { useForm } from '@mantine/form';
 import { useMutation } from 'react-query';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -29,10 +29,9 @@ export default function Login() {
             password: '',
             remember: '',
         },
-        validationRules: {
-            // imposter validation rule is noop and will be ignored, ts will complain
-            email: (value) => value !== '',
-            password: (value) => value !== '',
+        validate: {
+            email: (value) => value === '',
+            password: (value) => value === '',
         },
     });
 

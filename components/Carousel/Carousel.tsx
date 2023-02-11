@@ -102,7 +102,7 @@ function Carousel(props: CarouselProps) {
         width={Math.round(width)}
       />;
     }
-    if (item.mediaType.startsWith('model')) {
+    if (item.mediaType.startsWith('application/')) {
       return <Box
         key={index}
         sx={() => ({

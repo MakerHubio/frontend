@@ -8,14 +8,14 @@ import {
   Image,
   Text,
   ActionIcon,
-  Paper, Divider, Group, Button, createStyles, Skeleton,
+  Paper, Divider, Group, Button, createStyles, Skeleton, Stack,
 } from '@mantine/core';
 import { IoAdd, IoEllipsisVertical, IoTrash } from 'react-icons/io5';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 import { AxiosResponse } from 'axios';
 import { SyntheticEvent, useContext, useEffect, useState } from 'react';
-import { useNotifications } from '@mantine/notifications';
+import { showNotification } from '@mantine/notifications';
 import Shell from '../../components/Shell/Shell';
 import SettingsMenu from '../../components/Settings/Menu';
 import Project, { GetProjectsResponse } from '../../models/Project';
@@ -40,7 +40,6 @@ const useStyles = createStyles(theme => ({
 
 export default function ProjectsSettings() {
   const router = useRouter();
-  const notifications = useNotifications();
   const { globalState } = useContext(globalContext);
   const { classes } = useStyles();
 
@@ -78,7 +77,7 @@ export default function ProjectsSettings() {
             e.stopPropagation();
             if (project.id === undefined) return;
             RemoveProject(project.id).then(() => {
-              notifications.showNotification({
+              showNotification({
                 title: 'Project removed',
                 message: 'Successfully removed project',
                 color: 'green',
@@ -101,19 +100,19 @@ export default function ProjectsSettings() {
 
   const getContent = () => {
     if (projects.length === 0 && !isLoading) {
-      return (<Group direction="column" position="center" my="xl">
+      return (<Stack align="center" my="xl">
         <Text>You don&apos;t have any project!</Text>
         <Button
           onClick={() => router.push('/project/add')}
           leftIcon={<IoAdd size={20} />}
         >Create a project now!
         </Button>
-              </Group>);
+              </Stack>);
     }
     if (projects.length !== 0 && !isLoading) {
-      return <Group direction="column" spacing="xs">{getProjectList}</Group>;
+      return <Stack spacing="xs">{getProjectList}</Stack>;
     }
-    return <Group direction="column" spacing="xs">
+    return <Stack spacing="xs">
       <Group position="center">
         <Skeleton width={100} height={50} />
         <Skeleton width={150} height={10} />
@@ -122,7 +121,7 @@ export default function ProjectsSettings() {
         <Skeleton width={100} height={50} />
         <Skeleton width={150} height={10} />
       </Group>
-           </Group>;
+           </Stack>;
   };
 
   return <Shell>
