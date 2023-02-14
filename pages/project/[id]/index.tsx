@@ -34,6 +34,7 @@ import Head from 'next/head';
 import UserAvatar from '../../../components/UserAvatar';
 import { useSetState } from 'react-use';
 import { GetFileUrl } from '../../../apis/files';
+import { useDidUpdate, useIsomorphicEffect } from '@mantine/hooks';
 
 const TABS = ['description', 'files', 'comments', 'remixes'];
 
@@ -100,7 +101,8 @@ export default function Project(props: ProjectProps) {
       isLoading: false,
     });
 
-  const [currentTab, setCurrentTab] = useState<string | null>(router.asPath.split('#')[1] || TABS[0]);
+  const [currentTab, setCurrentTab] = useState<string | null>(
+    router.query?.currentTab as string || TABS[0]);
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
 
   useEffect(() => {
@@ -120,10 +122,14 @@ export default function Project(props: ProjectProps) {
     if (cItems !== undefined) setCarouselItems(cItems);
   }, []);
 
-  useEffect(() => {
-    console.log(router);
-    router.replace(`${router.asPath}?currentTab=${currentTab}`);
-  }, []);
+  useDidUpdate(() => {
+    router.replace({
+      pathname: router.route,
+      query: { ...router.query, currentTab },
+    }, undefined, {
+      shallow: true,
+    });
+  }, [currentTab]);
 
   const getTabContent = () => {
     switch (currentTab) {
@@ -138,7 +144,7 @@ export default function Project(props: ProjectProps) {
       case TABS[1]:
         return <FilesSection projectId={props.project.id!} files={props.project.files!}/>;
       case TABS[2]:
-        return <CommentSection projectId={props.project.id!} />;
+        return <CommentSection projectId={props.project.id!}/>;
       case TABS[3]:
         return <Paper p="md" shadow="md" withBorder radius="md">
           <Center mb="md">
@@ -203,7 +209,7 @@ export default function Project(props: ProjectProps) {
         <Col md={4}>
           <Card shadow="md" radius="md" withBorder>
             <Group spacing={0} position="right">
-              <Text size="lg" align="right" color="gray">
+              <Text size="lg" align="right" color="dimmed">
                 Free
               </Text>
               <IoAdd size={10}/>
@@ -264,7 +270,7 @@ export default function Project(props: ProjectProps) {
           </Card>
           <Space h="md"/>
           <Card shadow="md" radius="md" withBorder>
-            <Text size="sm" weight="bold" color="gray">
+            <Text size="sm" weight="bold" color="dimmed">
               Created by
             </Text>
             <Space h="sm"/>

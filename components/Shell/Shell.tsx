@@ -173,6 +173,7 @@ export default function Shell(props: PropsWithChildren<ShellProps>) {
                   styles={{ dropdown: { width: 350 } }}
                   position="bottom"
                   shadow="sm"
+                  width={400}
                   withArrow
                 >
                   <Popover.Target>
@@ -181,7 +182,7 @@ export default function Shell(props: PropsWithChildren<ShellProps>) {
                     </ActionIcon>
                   </Popover.Target>
                   <Popover.Dropdown>
-                    <Group position="apart" m="xs">
+                    <Group position="apart">
                       <Text sx={t => ({
                         color: t.colorScheme === 'light' ? 'black' : 'white',
                       })} weight="bold" size="sm">Notifications</Text>

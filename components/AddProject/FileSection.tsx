@@ -19,7 +19,7 @@ import {
   IoInformationCircle,
   IoMenu, IoTrash,
 } from 'react-icons/io5';
-import { Dropzone, DropzoneStatus, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { AddProjectFile } from '../../models/Project';
 import { humanFileSize } from '../../utils/file';
@@ -28,6 +28,8 @@ type FileSectionSectionProps = {
   files: AddProjectFile[],
   onFilesChanged: (file: AddProjectFile[]) => void,
 };
+
+type DropzoneStatus = 'idle' | 'rejected' | 'accepted';
 
 type ImageUploadIconProps = {
   status: DropzoneStatus;
@@ -38,11 +40,11 @@ function ImageUploadIcon({
                            status,
                            ...props
                          }: ImageUploadIconProps) {
-  if (status.accepted) {
+  if (status === 'accepted') {
     return <IoCloudUpload {...props} />;
   }
 
-  if (status.rejected) {
+  if (status === 'rejected') {
     return <IoAlert {...props} />;
   }
 
@@ -50,14 +52,15 @@ function ImageUploadIcon({
 }
 
 function getIconColor(status: DropzoneStatus, theme: MantineTheme) {
-  return status.accepted
+  return status === 'accepted'
     ? theme.colors[theme.primaryColor][6]
-    : status.rejected
+    : status === 'rejected'
       ? theme.colors.red[6]
       : theme.colorScheme === 'dark'
         ? theme.colors.dark[0]
         : theme.black;
 }
+
 /*
 const useStyles = createStyles(theme => ({
   modelWrapper: {
@@ -105,15 +108,18 @@ const useStyles = createStyles(theme => ({
 const fileImagePlaceholder = (type: string) => {
   switch (type) {
     case 'model/stl':
-      return <IoCube size={30} />;
+      return <IoCube size={30}/>;
     case 'application/pdf':
-      return <IoDocument size={30} />;
+      return <IoDocument size={30}/>;
     default:
-      return <IoImage size={30} />;
+      return <IoImage size={30}/>;
   }
 };
 
-export default function FileSection({ files, onFilesChanged }: FileSectionSectionProps) {
+export default function FileSection({
+                                      files,
+                                      onFilesChanged,
+                                    }: FileSectionSectionProps) {
   const theme = useMantineTheme();
 
   const addFile = (...file: AddProjectFile[]) => {
@@ -126,6 +132,16 @@ export default function FileSection({ files, onFilesChanged }: FileSectionSectio
     });
 
     onFilesChanged([...files, ...tmp_files]);
+  };
+
+  const removeFile = (file: AddProjectFile) => {
+    const new_files = new Array(...files);
+
+    const removeIndex = files.indexOf(file);
+
+    new_files.splice(removeIndex, 1);
+
+    onFilesChanged(new_files);
   };
 
   const reorder = (list: ArrayLike<any>, startIndex: number, endIndex: number) => {
@@ -152,84 +168,87 @@ export default function FileSection({ files, onFilesChanged }: FileSectionSectio
   };
 
   const getFileList = () => files.map((file, index) => (
-      <Draggable key={file.name + file.size} draggableId={file.name + file.size} index={index}>
-        {(provided, snapshot) => (
-          <Box
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            style={provided.draggableProps.style}
+    <Draggable key={file.name + file.size} draggableId={file.name + file.size} index={index}>
+      {(provided, snapshot) => (
+        <Box
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          style={provided.draggableProps.style}
+          sx={t => ({
+            marginBottom: t.spacing.sm,
+          })}
+        >
+          <Paper
+            withBorder
+            radius="md"
+            p="sm"
             sx={t => ({
-              marginBottom: t.spacing.sm,
+              width: '100%',
+              borderColor: snapshot.isDragging ? t.colors.blue[5] : t.colorScheme === 'light' ? t.colors.gray[2] : t.colors.gray[8],
+              transition: 'border-color .2s ease-out',
             })}
           >
-            <Paper
-              withBorder
-              radius="md"
-              p="sm"
-              sx={t => ({
-                width: '100%',
-                borderColor: snapshot.isDragging ? t.colors.blue[5] : t.colorScheme === 'light' ? t.colors.gray[2] : t.colors.gray[8],
-                transition: 'border-color .2s ease-out',
-              })}
-            >
-              <Group position="apart">
-                <Group>
-                  <ActionIcon {...provided.dragHandleProps}>
-                    <IoMenu />
-                  </ActionIcon>
-                  <Image
-                    withPlaceholder
-                    placeholder={fileImagePlaceholder(file.type)}
-                    width={160}
-                    height={90}
-                    src={file.thumbnail}
-                  />
-                  <Group spacing={0}>
-                    <Text lineClamp={1} weight="bold">{file.name}</Text>
-                    <ActionIcon color="blue" variant="transparent"><IoCreateOutline /></ActionIcon>
-                  </Group>
-                  <Text color="dimmed" size="sm">{humanFileSize(file.size, true)}</Text>
+            <Group position="apart">
+              <Group>
+                <ActionIcon {...provided.dragHandleProps}>
+                  <IoMenu/>
+                </ActionIcon>
+                <Image
+                  withPlaceholder
+                  placeholder={fileImagePlaceholder(file.type)}
+                  width={160}
+                  height={90}
+                  src={file.thumbnail}
+                />
+                <Group spacing={0}>
+                  <Text lineClamp={1} weight="bold">{file.name}</Text>
+                  <ActionIcon color="blue" variant="transparent"><IoCreateOutline/></ActionIcon>
                 </Group>
-                <Group>
-                <Menu
-                  control={
+                <Text color="dimmed" size="sm">{humanFileSize(file.size, true)}</Text>
+              </Group>
+              <Group>
+                <Menu>
+                  <Menu.Target>
                     <ActionIcon>
-                      <IoEllipsisVertical />
+                      <IoEllipsisVertical/>
                     </ActionIcon>
-                  }
-                  placement="end"
-                >
-                  {(IMAGE_MIME_TYPE as string[]).includes(file.type) ?
-                    <Menu.Item icon={<IoImage />}>
-                      Set as thumbnail
-                    </Menu.Item> : null}
-                  <Menu.Item color="red" icon={<IoTrash />}>
-                    Delete
-                  </Menu.Item>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    {(IMAGE_MIME_TYPE as string[]).includes(file.type) ?
+                      <Menu.Item icon={<IoImage/>}>
+                        Set as thumbnail
+                      </Menu.Item> : null}
+                    <Menu.Item color="red" icon={<IoTrash/>} onClick={() => removeFile(file)}>
+                      Remove
+                    </Menu.Item>
+                  </Menu.Dropdown>
                 </Menu>
 
-                </Group>
               </Group>
-            </Paper>
-          </Box>
-        )}
-      </Draggable>
-    ));
+            </Group>
+          </Paper>
+        </Box>
+      )}
+    </Draggable>
+  ));
 
   return <>
     <Alert
       title="Attention"
-      icon={<IoInformationCircle />}
+      icon={<IoInformationCircle/>}
     >
       Projects larger than 50 MB need to be verified by our mods.
       This should not take longer than a few hours.
     </Alert>
-    <Space h="sm" />
+    <Space h="sm"/>
     <Dropzone
       onDrop={(droppedFiles: AddProjectFile[]) => addFile(...droppedFiles)}
-      accept={[...IMAGE_MIME_TYPE, 'model/stl', 'model/x.stl-binary', 'model/x.stl-ascii', '.stl', 'application/pdf']}
+      accept={{
+        'image/*': [],
+        'model/stl': ['.stl'],
+      }}
     >
-      {(status) => (
+      <Dropzone.Accept>
         <Group
           position="center"
           spacing="xl"
@@ -239,12 +258,12 @@ export default function FileSection({ files, onFilesChanged }: FileSectionSectio
           }}
         >
           <ImageUploadIcon
-            status={status}
+            status="accepted"
             style={
               {
                 width: 80,
                 height: 80,
-                color: getIconColor(status, theme),
+                color: getIconColor('accepted', theme),
               }}
           />
 
@@ -258,9 +277,69 @@ export default function FileSection({ files, onFilesChanged }: FileSectionSectio
             </Text>
           </div>
         </Group>
-      )}
+      </Dropzone.Accept>
+      <Dropzone.Reject>
+        <Group
+          position="center"
+          spacing="xl"
+          style={{
+            minHeight: 220,
+            pointerEvents: 'none',
+          }}
+        >
+          <ImageUploadIcon
+            status="rejected"
+            style={
+              {
+                width: 80,
+                height: 80,
+                color: getIconColor('rejected', theme),
+              }}
+          />
+
+          <div>
+            <Text size="xl" inline>
+              Drag files here or click to select files
+            </Text>
+            <Text size="sm" color="dimmed" inline mt={7}>
+              Attach as many files as you like,
+              allowed file types are: stl, png, jpg, pdf
+            </Text>
+          </div>
+        </Group>
+      </Dropzone.Reject>
+      <Dropzone.Idle>
+        <Group
+          position="center"
+          spacing="xl"
+          style={{
+            minHeight: 220,
+            pointerEvents: 'none',
+          }}
+        >
+          <ImageUploadIcon
+            status="idle"
+            style={
+              {
+                width: 80,
+                height: 80,
+                color: getIconColor('idle', theme),
+              }}
+          />
+
+          <div>
+            <Text size="xl" inline>
+              Drag files here or click to select files
+            </Text>
+            <Text size="sm" color="dimmed" inline mt={7}>
+              Attach as many files as you like,
+              allowed file types are: stl, png, jpg, pdf
+            </Text>
+          </div>
+        </Group>
+      </Dropzone.Idle>
     </Dropzone>
-    <Space h="sm" />
+    <Space h="sm"/>
     <>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="filesDroppable">
@@ -276,5 +355,5 @@ export default function FileSection({ files, onFilesChanged }: FileSectionSectio
         </Droppable>
       </DragDropContext>
     </>
-         </>;
+  </>;
 }

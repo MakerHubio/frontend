@@ -30,7 +30,6 @@ async function CreateProject(projectRequest: CreateProjectRequest, files: Map<st
     withCredentials: true,
     onUploadProgress,
     headers: {
-      'Content-Type': 'application/json',
       Authorization: getCookie('mh_authorization'),
     },
   });
@@ -106,7 +105,6 @@ async function UpdateProjectFiles(updateProjectFilesRequest: UpdateProjectFilesR
     withCredentials: true,
     onUploadProgress,
     headers: {
-      'Content-Type': 'application/json',
       Authorization: getCookie('mh_authorization'),
     },
   });

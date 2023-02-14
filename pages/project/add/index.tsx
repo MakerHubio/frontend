@@ -134,24 +134,33 @@ export default function AddProject() {
             <Title>Add Project</Title>
             <Space h="sm" />
             <Paper radius="md" shadow="md" withBorder p="sm">
-              <Accordion disableIconRotation initialItem={0} offsetIcon={false} multiple>
-                <Accordion.Item
-                  label="General information"
-                  icon={<ThemeIcon variant="light"><IoList size={20} /></ThemeIcon>}
-                >
-                  <GeneralSection ref={generalSectionRef} />
+              <Accordion disableChevronRotation multiple>
+                <Accordion.Item value="general">
+                  <Accordion.Control icon={<ThemeIcon variant="light"><IoList size={20} /></ThemeIcon>}>
+                    General information
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <GeneralSection ref={generalSectionRef} />
+                  </Accordion.Panel>
                 </Accordion.Item>
-                <Accordion.Item
-                  label="Description"
-                  icon={<ThemeIcon variant="light"><IoInformation size={20} /></ThemeIcon>}
-                >
-                  <DescriptionSection
-                    value={descriptionValue}
-                    onChange={onDescriptionChange}
-                  />
+                <Accordion.Item value="description">
+                  <Accordion.Control icon={<ThemeIcon variant="light"><IoInformation size={20} /></ThemeIcon>}>
+                    Description
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <DescriptionSection
+                      value={descriptionValue}
+                      onChange={onDescriptionChange}
+                    />
+                  </Accordion.Panel>
                 </Accordion.Item>
-                <Accordion.Item label="Files" icon={<ThemeIcon variant="light"><IoDocument size={20} /></ThemeIcon>}>
-                  <FileSection files={files} onFilesChanged={setFiles} />
+                <Accordion.Item value="files">
+                  <Accordion.Control icon={<ThemeIcon variant="light"><IoDocument size={20} /></ThemeIcon>}>
+                    Files
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <FileSection files={files} onFilesChanged={setFiles} />
+                  </Accordion.Panel>
                 </Accordion.Item>
               </Accordion>
               <Space h="md" />

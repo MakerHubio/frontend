@@ -8,9 +8,9 @@ import {
   Image,
   Text,
   ActionIcon,
-  Paper, Divider, Group, Button, createStyles, Skeleton, Stack,
+  Paper, Divider, Group, Button, createStyles, Skeleton, Stack, Menu,
 } from '@mantine/core';
-import { IoAdd, IoEllipsisVertical, IoTrash } from 'react-icons/io5';
+import { IoAdd, IoEllipsisVertical, IoPencil, IoTrash } from 'react-icons/io5';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 import { AxiosResponse } from 'axios';
@@ -90,9 +90,19 @@ export default function ProjectsSettings() {
         >
             <IoTrash />
         </ActionIcon>
-        <ActionIcon variant="transparent" onClick={(e: SyntheticEvent) => e.stopPropagation()}>
+      <Menu width={200} withArrow shadow="md">
+        <Menu.Target>
+          <ActionIcon variant="transparent" onClick={(e: SyntheticEvent) => e.stopPropagation()}>
             <IoEllipsisVertical />
-        </ActionIcon>
+          </ActionIcon>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <Menu.Item icon={<IoPencil />}>Edit</Menu.Item>
+          <Menu.Divider />
+          <Menu.Label>Danger Zone</Menu.Label>
+          <Menu.Item color="red" icon={<IoTrash />}>Delete</Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
     </Group>
 
                                                   </Group>);

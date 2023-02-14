@@ -20,14 +20,12 @@ export function CommentDraft(props: CommentDraftProps) {
     />
     <Group position="apart">
       <Group>
-        <Tooltip label="Attach file" withArrow transition="slide-left" transitionDuration={300}
-                 transitionTimingFunction="ease">
+        <Tooltip label="Attach file" withArrow transition="slide-left" transitionDuration={300}>
           <ActionIcon color="gray">
             <IoAttach size={18}/>
           </ActionIcon>
         </Tooltip>
-        <Tooltip label="Link project" withArrow transition="slide-right" transitionDuration={300}
-                 transitionTimingFunction="ease">
+        <Tooltip label="Link project" withArrow transition="slide-right" transitionDuration={300}>
           <ActionIcon color="gray">
             <IoLink size={18}/>
           </ActionIcon>

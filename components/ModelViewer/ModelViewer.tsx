@@ -278,6 +278,8 @@ function ModelViewerComponent(
     if (viewer && color && viewer.model) {
       const [material] = viewer.model.materials;
       material.pbrMetallicRoughness.setBaseColorFactor(hexToRgbA(color));
+      material.pbrMetallicRoughness.setRoughnessFactor(0.3);
+      material.pbrMetallicRoughness.setMetallicFactor(0.1);
     }
   }, [color]);
 
@@ -305,7 +307,7 @@ function ModelViewerComponent(
     loading="eager"
     onClick={onViewerClick}
     shadow-intensity="1"
-    environment-image="neutral"
+    environment-image="legacy"
     camera-orbit={camera && camera.theta !== 0 ? `${camera.theta}rad ${camera.phi}rad ${camera.radius}m` : 'auto auto auto'}
     field-of-view={camera && camera.fov !== 0 ? `${camera.fov}` : 'auto'}
     poster={poster}

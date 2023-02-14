@@ -117,8 +117,8 @@ export default function ProjectCard({
           opened={popoverOpened}
           onClose={() => setPopoverOpened(false)}
           position="bottom"
+          withinPortal
           withArrow
-          transition="rotate-right"
           styles={{ dropdown: { width: 260 } }}
         >
           <Popover.Target>

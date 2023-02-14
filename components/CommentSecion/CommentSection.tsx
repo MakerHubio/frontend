@@ -22,12 +22,16 @@ export default function CommentSection(props: CommentSectionProps) {
   const [sortMethod, setSortMethod] = useState<string>('best');
   const router = useRouter();
   const { id } = router.query;
-  
+
   const {
     data: commentsResp,
     refetch,
     isRefetching,
-  } = useQuery(['comments', id], () => QueryComments({ projectId: (id as string), sortBy: sortMethod, limit: 10 }));
+  } = useQuery(['comments', id], () => QueryComments({
+    projectId: (id as string),
+    sortBy: sortMethod,
+    limit: 10,
+  }));
 
   const createComment = () => {
     CreateComment({
@@ -35,12 +39,13 @@ export default function CommentSection(props: CommentSectionProps) {
       text: commentDraft,
       attachedFiles: [],
       linkedProjects: [],
-    }).then(result => {
-      if (result.status === 200) {
-        setSortMethod('newest');
-        setCommentDraft('');
-      }
-    });
+    })
+      .then(result => {
+        if (result.status === 200) {
+          setSortMethod('newest');
+          setCommentDraft('');
+        }
+      });
   };
 
   useEffect(() => {
@@ -48,24 +53,27 @@ export default function CommentSection(props: CommentSectionProps) {
   }, [sortMethod]);
 
   return <div>
-    <CommentDraft draft={commentDraft} setDraft={setCommentDraft} onSend={createComment} />
-    <Space h="md" />
-    <Menu control={
-      <Button color="gray"
-              variant="subtle"
-              compact
-              rightIcon={<IoChevronDown />}>Sort by: {SortMethods[sortMethod]}</Button>
-    }>
-      <Menu.Item onClick={() => setSortMethod('best')}>Best</Menu.Item>
-      <Menu.Item onClick={() => setSortMethod('newest')}>Newest</Menu.Item>
-      <Menu.Item onClick={() => setSortMethod('oldest')}>Oldest</Menu.Item>
+    <CommentDraft draft={commentDraft} setDraft={setCommentDraft} onSend={createComment}/>
+    <Space h="md"/>
+    <Menu>
+      <Menu.Target>
+        <Button color="gray"
+                variant="subtle"
+                compact
+                rightIcon={<IoChevronDown/>}>Sort by: {SortMethods[sortMethod]}</Button>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item onClick={() => setSortMethod('best')}>Best</Menu.Item>
+        <Menu.Item onClick={() => setSortMethod('newest')}>Newest</Menu.Item>
+        <Menu.Item onClick={() => setSortMethod('oldest')}>Oldest</Menu.Item>
+      </Menu.Dropdown>
     </Menu>
-    { isRefetching ? <Loader size="xs" /> : null }
-    { commentsResp ? commentsResp.data.map(comment =>
+    {isRefetching ? <Loader size="xs"/> : null}
+    {commentsResp ? commentsResp.data.map(comment =>
       <div key={comment.id}>
-        <Space h="md" />
-        <Comment comment={comment} sortBy={sortMethod} />
+        <Space h="md"/>
+        <Comment comment={comment} sortBy={sortMethod}/>
       </div>
-    ) : null }
+    ) : null}
   </div>;
 }

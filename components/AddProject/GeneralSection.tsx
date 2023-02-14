@@ -1,5 +1,5 @@
 import { Checkbox, MultiSelect, Space, TextInput } from '@mantine/core';
-import { useForm } from '@mantine/hooks';
+import { useForm } from '@mantine/form';
 import { forwardRef, Ref, useImperativeHandle } from 'react';
 
 type GeneralSectionProps = {};
@@ -14,11 +14,8 @@ function GeneralSection(props: GeneralSectionProps, ref: Ref<GeneralSectionEleme
             is_free: true,
             tags: [] as string[],
         },
-        validationRules: {
+        validate: {
             name: (value) => value.trim().length > 5,
-        },
-        errorMessages: {
-            name: 'Name is required and must gave at least 5 characters',
         },
     });
 
@@ -51,7 +48,11 @@ function GeneralSection(props: GeneralSectionProps, ref: Ref<GeneralSectionEleme
           getCreateLabel={(query) => `+ Add ${query}`}
           label="Tags"
           description="Select as much tags as possible which fit your project"
-          onCreate={value => { form.values.tags.push(value); }}
+          onCreate={value => {
+              const item = { value: value, label: value };
+              form.values.tags.push(value);
+              return item;
+          }}
           data={[]}
           {...form.getInputProps('tags')}
         />
